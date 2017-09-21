@@ -97,7 +97,40 @@ public class Matrix {
     boolean isTriangle = false;
 
     private void normalize(){
-        System.out.println(findStrokeWithZeros(0));
+        // Can we reduce the cycle steps?
+        for (int i = 0; i < getY(); i++)try {
+            swapStrokes(findStrokeWithZeros(getX() - i - 1), getX() - i - 1);
+        }catch (IndexOutOfBoundsException e){
+            System.out.println(e.getMessage());
+        }
+        for (int i = 0; i < getX(); i++)try {
+            swapColumns(findColumnWithoutZeros(getY() - i), i);
+        }catch (IndexOutOfBoundsException e){
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println(this);
+
+    }
+
+    public void swapStrokes(int i, int j){
+        Double tmp;
+        for (int k = 0; k < getX(); k++){
+            tmp = m[i][k];
+            m[i][k] = m[j][k];
+            m[j][k] = tmp;
+        }
+
+    }
+
+    public void swapColumns(int i, int j){
+        Double tmp;
+        for (int k = 0; k < getY(); k++){
+            tmp = m[k][i];
+            m[k][i] = m[k][j];
+            m[k][j] = tmp;
+        }
+
     }
 
     // Which stroke contains zerosNumber zeros?
@@ -106,7 +139,8 @@ public class Matrix {
 
         for(int i = 0; i < getY(); i++) {
 
-            currentZero = 0;
+            currentZero = 0 ;
+
             for (int j = 0; j < getX(); j++)
                 if(get(i,j) == 0.0)
                     currentZero++;
@@ -114,11 +148,39 @@ public class Matrix {
             if(currentZero == zerosNumber)
                 return i;
         }
+        System.out.println(this);
         throw new IndexOutOfBoundsException("There's no a stroke with " + zerosNumber + " zeros!");
     }
-    public Double det(){
+
+    // To insert columns in the right position
+    // Returns an index of a column contains %count non-zero numbers
+    private int findColumnWithoutZeros(int count) throws IndexOutOfBoundsException{
+        int currentCount = -1;
+
+        for(int i = 0; i < getX(); i++) {
+
+            currentCount = 0;
+            for (int j = 0; j < getY(); j++)
+                if(get(j,i) != 0.0)
+                    currentCount++;
+
+            if(currentCount == count)
+                return i;
+        }
+        throw new IndexOutOfBoundsException("There's no a column without " + currentCount + " zeros!");
+    }
+    // It's calculated by diagonal multiplication
+    public Double det() throws IllegalArgumentException{
+        if(!isSquare())
+            throw new IllegalArgumentException("A matrix must be square to calculate the det of it");
         triangulate();
-        return 0.0;
+        Double det = 1.0;
+        // Be careful with the borders
+        for(int i = getY()-1; i >= 0;i--)
+            det *= m[i][getY()-1-i];
+
+
+        return det;
     }
     @Override
     public String toString(){
