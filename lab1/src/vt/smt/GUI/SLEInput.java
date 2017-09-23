@@ -24,7 +24,7 @@ class SLEInput extends Pane {
 
         if( columns > vBox.getChildren().size()  )
             while ( vBox.getChildren().size() < columns)
-                vBox.getChildren().add(new EquationStroke(rows));
+                vBox.getChildren().add(new EquationStroke());
         else
             vBox.getChildren().remove(columns,vBox.getChildren().size());
 

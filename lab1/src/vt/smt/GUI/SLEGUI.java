@@ -36,7 +36,7 @@ public class SLEGUI extends Application{
         primaryStage.show();
 
     }
-    SLEInput sle = new SLEInput(0,0);
+    SLEInput sle = new SLEInput(4,3);
     private BorderPane mainPane = new BorderPane();
     private Slider matrixSize = new Slider();
 
