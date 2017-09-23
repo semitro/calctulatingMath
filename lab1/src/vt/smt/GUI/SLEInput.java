@@ -21,7 +21,6 @@ class SLEInput extends Pane {
 
     // Количество полей для ввода
     public void setSize(int rows, int columns){
-
         if( columns > vBox.getChildren().size()  )
             while ( vBox.getChildren().size() < columns)
                 vBox.getChildren().add(new EquationStroke());
@@ -31,5 +30,19 @@ class SLEInput extends Pane {
         vBox.getChildren().forEach(e->{
             ((EquationStroke)e).setLength(rows);
         });
+    }
+
+    public int getRows(){
+        return vBox.getChildren().size();
+    }
+    public int getColumns(){
+        return ((EquationStroke)vBox.getChildren().get(0)).getNumber();
+
+    }
+    Double[][] getMatrix() {
+        Double[][] ans = new Double[getRows()][getColumns()];
+        for (int i = 0; i < ans.length; i++)
+            ans[i] = ((EquationStroke) vBox.getChildren().get(i)).getValues();
+        return ans;
     }
 }

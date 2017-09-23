@@ -40,19 +40,22 @@ public class EquationStroke extends HBox {
                 ((Text)getChildren().get(i)).setText(" ");
             else
             if(i == getChildren().size()-3)
-                ((Text)getChildren().get(i)).setText("  =  ");
+                ((Text)getChildren().get(i)).setText("X "+ k + "  =  ");
             else
                 ((Text)getChildren().get(i)).setText("X" + k + " + " );
         }
     }
+    public Double[] getValues(){
+        Double ans[] = new Double[getChildren().size()/2];
+        for(int i = 0, k = 0 ; i < getChildren().size();i+=2, k++){
+            ans[k] = Double.parseDouble( ((TextField)getChildren().get(i)).getText() );
+        }
+        return ans;
+    }
     public void setLength(int number){
         // Умножаем или делим на два, потому что после каждго инпута есть лейбл
-        if(number > getNumber()/2) {
+        if(number > getNumber()/2)
             addRow(number - getNumber() / 2);
-            //((Text)this.getChildren().get(this.getChildren().size()-1)).setText(" ");
-           // ((Text)this.getChildren().get(this.getChildren().size()-3)).setText(" = ");
-
-        }
         else
             this.getChildren().remove(number*2,getChildren().size());
 
