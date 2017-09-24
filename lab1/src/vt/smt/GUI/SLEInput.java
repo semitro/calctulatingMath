@@ -1,11 +1,14 @@
 package vt.smt.GUI;
 
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import vt.smt.GUI.Observer.MyEvent;
-import vt.smt.GUI.Observer.Observer;
 import vt.smt.GUI.Observer.*;
+
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by semitro on 23.09.17.
  */
@@ -18,6 +21,7 @@ class SLEInput extends Pane implements Observer {
         setSize(rows,columns);
         this.getChildren().add(vBox);
         //this.setStyle("fx-min");
+
     }
 
     public void setMatrix(vt.smt.MyMath.Matrix matrix){
@@ -38,16 +42,63 @@ class SLEInput extends Pane implements Observer {
         });
     }
 
-    // Чтобы отслеживать в гуи выполнение алгоритма
+    // Отрисовка изменений в самой матрице. Обработка сообщений от Obserable Matirx
     @Override
-    public void notice(MyEvent event) {
-        System.out.println(((ChooseCeil) event).getColorID());
-        if(event instanceof ChooseCeil)
-            getFiledNumber( ((ChooseCeil)event).getPosition().getKey(),  ((ChooseCeil)event).getPosition().getValue() )
-                    .setId( ((ChooseCeil)event).getColorID() );
+    public synchronized void notice(MyEvent event) {
+        resetStyles();
+        // Перекрашиваем цвет выбранной ячейки, меняя css-стиль
+        if(event instanceof ChooseCeil) {
+            lastNodeChanged.add(
+                getFiledNumber( ((ChooseCeil)event).getPosition().getKey(),((ChooseCeil)event).getPosition().getValue())
+            );
+            getFiledNumber( ((ChooseCeil)event).getPosition().getKey(),((ChooseCeil)event).getPosition().getValue())
+                    .setId( ((ChooseCeil)event).getColorID());
+        }
+        else
+            if(event instanceof ChangeCeil){
+                getFiledNumber( ((ChangeCeil)event ).getPosition().getKey(), ((ChangeCeil)event ).getPosition().getValue())
+                        .setText(((ChangeCeil)event ).getText());
+            }
+        else
+            if(event instanceof SwapLines){
+                if( ((SwapLines) event).isAboutRows()) {
+                    lastNodeChanged.addAll(
+                            ((EquationStroke)vBox.getChildren().get(((SwapLines) event).getI()))
+                                    .getAllTextFields()
+                    );
+                    lastNodeChanged.addAll(
+                            ((EquationStroke)vBox.getChildren().get(((SwapLines) event).getJ()))
+                                    .getAllTextFields()
+                    );
+
+                    ((EquationStroke)vBox.getChildren().get(((SwapLines) event).getI()))
+                            .forEachInput(e->e.setId("lineIsChanging"));
+                    ((EquationStroke)vBox.getChildren().get(((SwapLines) event).getJ()))
+                            .forEachInput(e->e.setId("lineIsChanging"));
+                }
+                else{
+                    for(int i = 0; i < vBox.getChildren().size();i++) {
+                        ((EquationStroke)vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getI())
+                                .setId("lineIsChanging");
+                        ((EquationStroke)vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getJ())
+                                .setId("lineIsChanging");
+                        lastNodeChanged.add(
+                                ((EquationStroke)vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getJ()));
+                        lastNodeChanged.add(
+                                ((EquationStroke)vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getI()));
+                    }
+                }
+            }
 
     }
 
+    // Эти поля нужны, чтобы вернуть все цвета назад
+    private List<Node> lastNodeChanged = new LinkedList<>();
+    public synchronized void resetStyles(){
+        if(!lastNodeChanged.isEmpty())
+            lastNodeChanged.forEach(e->e.setId("inputValueCeil"));
+        lastNodeChanged.clear();
+    }
     public TextField getFiledNumber(int i, int j){
         return (TextField)((EquationStroke)vBox.getChildren().get(i)).getFieldNumber(j);
     }

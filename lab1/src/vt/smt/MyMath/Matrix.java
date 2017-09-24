@@ -18,6 +18,14 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         observers.add(observer);
     }
 
+    public void noticeAll(MatrixEvent event, int delay){
+        observers.forEach(e->e.notice(event));
+        try {
+            Thread.currentThread().sleep(delay);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+    }
     public Matrix(Double m[][]){
         int s1 = m.length;
         int s2 = m[0].length;
@@ -48,13 +56,13 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
             if(without != null && without.contains(i))
                 continue;
             for (int j = 0; j < getX(); j++) {
-                for (Observer ob:observers)
-                    ob.notice(new ChooseCeil(new Pair<Integer, Integer>(i,j),"justSelectedElement"));
+                noticeAll(new ChooseCeil(new Pair<Integer, Integer>(i,j),"justSelectedElement"),40);
 
                 if (Math.abs(m[i][j]) > currentMax) {
+                    noticeAll(new ChooseCeil(new Pair<Integer, Integer>(i,j),"newMaximumElement"),50);
                     x = i;
                     y = j;
-                    currentMax = m[i][j];
+                    currentMax = Math.abs(m[i][j]);
                 }
             }
         }
@@ -73,8 +81,7 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
 
         for(int loop = 0; loop < getY()-1;loop++) {
             final Pair<Integer, Integer> mainPos = findMaxAbs(strokesToSkip);
-            observers.forEach(e->e.notice(new ChooseCeil(mainPos, new String("mainElementCeil"))));
-
+            noticeAll(new ChooseCeil(mainPos, new String("mainElementCeil")),40);
             strokesToSkip.add(mainPos.getKey());
 
             Double main = get(mainPos.getKey(), mainPos.getValue());
@@ -91,6 +98,7 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
                         continue;
 
                     m[i][j] += get(mainPos.getKey(), j) * factor;
+                    noticeAll(new ChangeCeil(new Pair<Integer, Integer>(i,j),Double.toString(m[i][j])),50);
                 }
 
             }
@@ -115,12 +123,14 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
     public void normalize(){
         // Can we reduce the cycle steps?
         for (int i = 0; i < getY(); i++)try {
-            swapStrokes(findStrokeWithZeros(getX() - i - 1), getX() - i - 1);
+             swapStrokes(findStrokeWithZeros(getX() - i - 1), getX() - i - 1);
         }catch (IndexOutOfBoundsException e){
             System.out.println(e.getMessage());
         }
-        for (int i = 0; i < getX(); i++)try {
-            swapColumns(findColumnWithoutZeros(getY() - i), i);
+        for (int i = 0; i < getX()-1; i++)try {
+            int currentColumn = findColumnWithoutZeros(getY() - i);
+            if(currentColumn != m[0].length - 1)
+             swapColumns(currentColumn, i);
         }catch (IndexOutOfBoundsException e){
             System.out.println(e.getMessage());
         }
@@ -135,18 +145,27 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
             tmp = m[i][k];
             m[i][k] = m[j][k];
             m[j][k] = tmp;
+            noticeAll(new ChangeCeil(
+                    new Pair<Integer, Integer>(j,k),Double.toString(m[i][k])),
+                    10
+            );
+            noticeAll(new ChangeCeil(
+                            new Pair<Integer, Integer>(i,k),Double.toString(m[j][k])),
+                    10
+            );
         }
 
+        noticeAll(new SwapLines(i,j,true),200);
     }
 
-    public void swapColumns(int i, int j){
+    public void swapColumns(int i, int j) {
         Double tmp;
-        for (int k = 0; k < getY(); k++){
+        for (int k = 0; k < getY(); k++) {
             tmp = m[k][i];
             m[k][i] = m[k][j];
             m[k][j] = tmp;
         }
-
+        noticeAll(new SwapLines(i, j, false), 200);
     }
 
     // Which stroke contains zerosNumber zeros?

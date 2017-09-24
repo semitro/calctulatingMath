@@ -4,6 +4,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
+
 /**
  * Created by semitro on 23.09.17.
  */
@@ -75,5 +79,16 @@ public class EquationStroke extends HBox {
     }
     public TextField getFieldNumber(int i){
         return (TextField)getChildren().get(i*2);
+    }
+    public void forEachInput(Consumer<TextField> ceil){
+        for(int i = 0, k = 0; i < getChildren().size();i+=2, k++)
+            ceil.accept((TextField)this.getChildren().get(i));
+    }
+
+    public List<TextField> getAllTextFields(){
+        List<TextField> ans = new LinkedList<>();
+        for(int i = 0, k = 0; i < getChildren().size();i+=2, k++)
+            ans.add((TextField)this.getChildren().get(i));
+        return ans;
     }
 }

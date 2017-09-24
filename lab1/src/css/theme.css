@@ -12,8 +12,14 @@
 #justSelectedElement{
 	-fx-background-color: #AAFF4d;
 }
+#newMaximumElement{
+	-fx-background-color: #AABFFd;
+}
 #mainElementCeil{
 	-fx-background-color: #FF4d4d;
+}
+#lineIsChanging{
+	-fx-background-color: #CF4d4d;
 }
 .text-field {
         -fx-background-color: #1d1d1d;

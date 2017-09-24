@@ -1,6 +1,7 @@
 package vt.smt.GUI;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -26,7 +27,7 @@ public class SLEGUI extends Application{
         Scene scene = new Scene(mainPane,800,600);
         scene.getStylesheets().add("css/theme.css");
         mainPane.setCenter(sleGUI);
-
+        primaryStage.setOnCloseRequest(e->System.exit(0));
         matrixSize.valueProperty().addListener( (e,oldValue,newValue)->{
             if(newValue.intValue() != oldValue.intValue())
                  sleGUI.setSize(newValue.intValue()+1, newValue.intValue());
@@ -40,12 +41,19 @@ public class SLEGUI extends Application{
             Matrix m = new Matrix(sleGUI.getMatrix());
             // Связываем наблюдателя с источником событий
             m.subscribe(sleGUI);
-            vt.smt.MyMath.Util.printMatrix(m.get());
-            System.out.println();
-            m.triangulate();
-            vt.smt.MyMath.Util.printMatrix(m.get());
-            m.normalize();
-            vt.smt.MyMath.Util.printMatrix(m.get());
+            Platform.runLater(()->{
+                Thread t = new Thread(()->{
+                    vt.smt.MyMath.Util.printMatrix(m.get());
+                    System.out.println();
+                    m.triangulate();
+                    m.normalize();
+                    sleGUI.resetStyles();
+
+                });
+                t.setDaemon(true);
+                t.start();
+            });
+
         });
         fileButton.setOnMouseClicked(e->{
             File file = fileChooser.showOpenDialog(primaryStage);
