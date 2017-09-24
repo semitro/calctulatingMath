@@ -119,16 +119,18 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
 
 
     public void normalize(){
-        // Can we reduce the cycle steps?
-        for (int i = 0; i < getY(); i++)try {
-             swapStrokes(findStrokeWithZeros(getX() - i - 1), getX() - i - 1);
-        }catch (IndexOutOfBoundsException e){
-            System.out.println(e.getMessage());
-        }
-        for (int i = 0; i < getX()-1; i++)try {
-            int currentColumn = findColumnWithoutZeros(getY() - i);
-            if(currentColumn != m[0].length - 1)
-             swapColumns(currentColumn, i);
+        // Обязательно есть колонка с количеством нулей от n до n-1
+//        for (int i = 0; i < getY(); i++)try {
+//             swapStrokes(findStrokeWithZeros(getX() - i - 1), getX() - i - 1);
+//        }catch (IndexOutOfBoundsException e){
+//            System.out.println(e.getMessage());
+//        }
+        int k = 0;
+        for(int i = getY()-1; i >= 0; i--)try{
+            swapColumns(
+                    findColumnWithZeros(i),
+                    k++
+            );
         }catch (IndexOutOfBoundsException e){
             System.out.println(e.getMessage());
         }
@@ -164,11 +166,11 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
             m[k][i] = m[k][j];
             m[k][j] = tmp;
             noticeAll(new ChangeCeil(
-                            new Pair<Integer, Integer>(i,k),Double.toString(m[i][k])),
+                            new Pair<Integer, Integer>(k,i),Double.toString(m[k][i])),
                     10
             );
             noticeAll(new ChangeCeil(
-                            new Pair<Integer, Integer>(j,k),Double.toString(m[j][k])),
+                            new Pair<Integer, Integer>(k,j),Double.toString(m[k][j])),
                     10
             );
         }
@@ -176,41 +178,40 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
     }
 
     // Which stroke contains zerosNumber zeros?
-    private int findStrokeWithZeros(int zerosNumber) throws IndexOutOfBoundsException{
-        int currentZero = -1;
+//    private int findStrokeWithZeros(int zerosNumber) throws IndexOutOfBoundsException{
+//        int currentZero = -1;
+//
+//        for(int i = 0; i < getY(); i++) {
+//
+//            currentZero = 0 ;
+//
+//            for (int j = 0; j < getX(); j++)
+//                if(get(i,j) == 0.0)
+//                    currentZero++;
+//
+//            if(currentZero == zerosNumber)
+//                return i;
+//        }
+//        System.out.println(this);
+//        throw new IndexOutOfBoundsException("There's no a stroke with " + zerosNumber + " zeros!");
+//    }
 
-        for(int i = 0; i < getY(); i++) {
+    private int findColumnWithZeros(int count) throws IndexOutOfBoundsException{
+        int currentZero = 0;
 
+        for(int i = 0; i < getX() ; i++) {
             currentZero = 0 ;
-
-            for (int j = 0; j < getX(); j++)
-                if(get(i,j) == 0.0)
+            for (int j = 0; j < getY(); j++)
+                if(get(j,i) == 0.0)
                     currentZero++;
 
-            if(currentZero == zerosNumber)
+            if(currentZero == count)
                 return i;
         }
         System.out.println(this);
-        throw new IndexOutOfBoundsException("There's no a stroke with " + zerosNumber + " zeros!");
+        throw new IndexOutOfBoundsException("There's no a column with " + count + " zeros!");
     }
 
-    // To insert columns in the right position
-    // Returns an index of a column contains %count non-zero numbers
-    private int findColumnWithoutZeros(int count) throws IndexOutOfBoundsException{
-        int currentCount = -1;
-
-        for(int i = 0; i < getX(); i++) {
-
-            currentCount = 0;
-            for (int j = 0; j < getY(); j++)
-                if(get(j,i) != 0.0)
-                    currentCount++;
-
-            if(currentCount == count)
-                return i;
-        }
-        throw new IndexOutOfBoundsException("There's no a column without " + currentCount + " zeros!");
-    }
     // It's calculated by diagonal multiplication
     public Double det() throws IllegalArgumentException{
         if(!isSquare())

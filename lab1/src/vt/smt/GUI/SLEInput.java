@@ -95,11 +95,12 @@ class SLEInput extends Pane implements Observer {
     // Эти поля нужны, чтобы вернуть все цвета назад
     private List<Node> lastNodeChanged = new LinkedList<>();
     public void resetStyles(){
-        try {
-            for (Node l : lastNodeChanged) l.setId("inputValueCeil");
-        }catch (IndexOutOfBoundsException e){
 
-        }
+            for (Node l : lastNodeChanged) try { l.setId("inputValueCeil");
+            }catch (Exception e){
+                // do nothing. It's wrong, but xren c nim pocka chto. Вылазиет неочевидный ArrayOutOfBound exeption
+            }
+
         lastNodeChanged.clear();
     }
     public TextField getFiledNumber(int i, int j){
