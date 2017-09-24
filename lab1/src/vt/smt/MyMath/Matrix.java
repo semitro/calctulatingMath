@@ -21,7 +21,7 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
     public void noticeAll(MatrixEvent event, int delay){
         observers.forEach(e->e.notice(event));
         try {
-            Thread.currentThread().sleep(delay);
+            Thread.currentThread().sleep(delay+40);
         }catch (InterruptedException e){
             e.printStackTrace();
         }
@@ -48,14 +48,16 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
 
     // Returns the position of the max absolute value
     // It can accepts the set of strokes to skip (we need this in Main-element-method
-    public Pair<Integer, Integer> findMaxAbs(@Nullable Collection<Integer> without){
+    public Pair<Integer, Integer> findMaxAbs(@Nullable Collection<Integer> withoutRow, @Nullable Collection<Integer> withoutColumn){
         Double currentMax = Math.abs(m[0][0]);
         int x = 0, y = 0;
 
         for(int i = 0; i < getY(); i++) {
-            if(without != null && without.contains(i))
+            if(withoutRow != null && withoutRow.contains(i))
                 continue;
             for (int j = 0; j < getX(); j++) {
+                if(withoutColumn != null && withoutColumn.contains(j))
+                    continue;
                 noticeAll(new ChooseCeil(new Pair<Integer, Integer>(i,j),"justSelectedElement"),40);
 
                 if (Math.abs(m[i][j]) > currentMax) {
@@ -79,8 +81,8 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         Collection<Integer> strokesToSkip = new TreeSet<>();
         Collection<Integer> columnsToSkip = new TreeSet<>();
 
-        for(int loop = 0; loop < getY()-1;loop++) {
-            final Pair<Integer, Integer> mainPos = findMaxAbs(strokesToSkip);
+        for(int loop = 0; loop < getY();loop++) {
+            final Pair<Integer, Integer> mainPos = findMaxAbs(strokesToSkip,columnsToSkip);
             noticeAll(new ChooseCeil(mainPos, new String("mainElementCeil")),40);
             strokesToSkip.add(mainPos.getKey());
 
@@ -90,14 +92,15 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
                 if (strokesToSkip.contains(i)) // We don't need to mul the main stroke by itself
                     continue;
 
-                // Coefficient to mul each stroke by this
+                // Coefficient to mul each column by this
                 Double factor = -get(i, mainPos.getValue()) / main;
-                System.out.println("factor: " + factor + " #main: " + main);
                 for (int j = 0; j < getX(); j++) {
                     if (columnsToSkip.contains(j))
                         continue;
-
+                    // Прибавляем почленно главную строку, умножив её на коэффициент
                     m[i][j] += get(mainPos.getKey(), j) * factor;
+                    if(Math.abs(m[i][j]) < 7.440892098500626E-16 )
+                        m[i][j] = 0.0;
                     noticeAll(new ChangeCeil(new Pair<Integer, Integer>(i,j),Double.toString(m[i][j])),50);
                 }
 
@@ -105,13 +108,8 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
             // At first we need to close the column to skip it later
             columnsToSkip.add(mainPos.getValue());
         }
-        /*
-        // Small optimization:
-        // We let the matrix to stay not actually triangle: instead of mix strokes
-        // (This operation use too many write-requests to slow RAM)
-        // We will calculate, imitate, and imagine the matrix like its triangle
-        */
-        System.out.println("Before mormilize: ");
+
+        System.out.println("Before mormalize: ");
         vt.smt.MyMath.Util.printMatrix(this.get());
         normalize();
         isTriangle = true;
@@ -145,13 +143,14 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
             tmp = m[i][k];
             m[i][k] = m[j][k];
             m[j][k] = tmp;
+
             noticeAll(new ChangeCeil(
-                    new Pair<Integer, Integer>(j,k),Double.toString(m[i][k])),
-                    10
+                    new Pair<Integer, Integer>(i,k),Double.toString(m[i][k])),
+                    40
             );
             noticeAll(new ChangeCeil(
-                            new Pair<Integer, Integer>(i,k),Double.toString(m[j][k])),
-                    10
+                            new Pair<Integer, Integer>(j,k),Double.toString(m[j][k])),
+                    40
             );
         }
 
@@ -164,6 +163,14 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
             tmp = m[k][i];
             m[k][i] = m[k][j];
             m[k][j] = tmp;
+            noticeAll(new ChangeCeil(
+                            new Pair<Integer, Integer>(i,k),Double.toString(m[i][k])),
+                    10
+            );
+            noticeAll(new ChangeCeil(
+                            new Pair<Integer, Integer>(j,k),Double.toString(m[j][k])),
+                    10
+            );
         }
         noticeAll(new SwapLines(i, j, false), 200);
     }

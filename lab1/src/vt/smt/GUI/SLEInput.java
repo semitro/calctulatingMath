@@ -94,9 +94,12 @@ class SLEInput extends Pane implements Observer {
 
     // Эти поля нужны, чтобы вернуть все цвета назад
     private List<Node> lastNodeChanged = new LinkedList<>();
-    public synchronized void resetStyles(){
-        if(!lastNodeChanged.isEmpty())
-            lastNodeChanged.forEach(e->e.setId("inputValueCeil"));
+    public void resetStyles(){
+        try {
+            for (Node l : lastNodeChanged) l.setId("inputValueCeil");
+        }catch (IndexOutOfBoundsException e){
+
+        }
         lastNodeChanged.clear();
     }
     public TextField getFiledNumber(int i, int j){

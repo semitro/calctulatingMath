@@ -46,9 +46,8 @@ public class SLEGUI extends Application{
                     vt.smt.MyMath.Util.printMatrix(m.get());
                     System.out.println();
                     m.triangulate();
-                    m.normalize();
                     sleGUI.resetStyles();
-
+                    vt.smt.MyMath.Util.printMatrix(m.get());
                 });
                 t.setDaemon(true);
                 t.start();
