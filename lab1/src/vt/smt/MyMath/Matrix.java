@@ -182,6 +182,10 @@ public class Matrix {
 
         return det;
     }
+
+    public Double[] getRow(int n){
+        return this.m[n];
+    }
     @Override
     public String toString(){
         StringBuilder str = new StringBuilder();

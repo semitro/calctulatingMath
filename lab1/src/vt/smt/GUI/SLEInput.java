@@ -1,6 +1,5 @@
 package vt.smt.GUI;
 
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
@@ -8,9 +7,8 @@ import javafx.scene.layout.VBox;
  * Created by semitro on 23.09.17.
  */
 class SLEInput extends Pane {
-    TextField f = new TextField("fsf");
-    private VBox vBox = new VBox();
 
+    private VBox vBox = new VBox();
     public  SLEInput(int rows, int columns){
         super();
         vBox.setSpacing(5);
@@ -19,6 +17,11 @@ class SLEInput extends Pane {
         //this.setStyle("fx-min");
     }
 
+    public void setMatrix(vt.smt.MyMath.Matrix matrix){
+        setSize(matrix.getX(),matrix.getY());
+        for (int i = 0; i < matrix.getY(); i++)
+            ((EquationStroke)vBox.getChildren().get(i)).setValues(matrix.getRow(i));
+    }
     // Количество полей для ввода
     public void setSize(int rows, int columns){
         if( columns > vBox.getChildren().size()  )
@@ -31,6 +34,7 @@ class SLEInput extends Pane {
             ((EquationStroke)e).setLength(rows);
         });
     }
+
 
     public int getRows(){
         return vBox.getChildren().size();
@@ -45,4 +49,5 @@ class SLEInput extends Pane {
             ans[i] = ((EquationStroke) vBox.getChildren().get(i)).getValues();
         return ans;
     }
+
 }

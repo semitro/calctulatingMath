@@ -2,6 +2,7 @@ package vt.smt.GUI;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
@@ -24,11 +25,11 @@ public class SLEGUI extends Application{
     public void start(Stage primaryStage) throws Exception {
         Scene scene = new Scene(mainPane,800,600);
         scene.getStylesheets().add("css/theme.css");
-        mainPane.setCenter(sle);
+        mainPane.setCenter(sleGUI);
 
         matrixSize.valueProperty().addListener( (e,oldValue,newValue)->{
             if(newValue.intValue() != oldValue.intValue())
-                 sle.setSize(newValue.intValue()+1, newValue.intValue());
+                 sleGUI.setSize(newValue.intValue()+1, newValue.intValue());
         });
 
         mainPane.setTop(matrixSize);
@@ -42,8 +43,14 @@ public class SLEGUI extends Application{
             File file = fileChooser.showOpenDialog(primaryStage);
             try {
                 vt.smt.MyMath.Matrix matrix = new vt.smt.MyMath.Matrix(vt.smt.MyMath.Util.loadMatrixFromFile(file));
-            }catch (IOException exeption){
-                exeption.printStackTrace();
+                sleGUI.setMatrix(matrix);
+            }catch (IOException | NumberFormatException | IndexOutOfBoundsException exception){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Убедитесь в адекватности файла");
+                alert.setTitle("Не");
+                alert.setHeaderText("Ну не");
+                alert.show();
+                exception.printStackTrace();
             }
         });
         primaryStage.setScene(scene);
@@ -65,7 +72,7 @@ public class SLEGUI extends Application{
         fileChooser.setInitialDirectory(new File("tests"));
     }
 
-    SLEInput sle = new SLEInput(4,3);
+    SLEInput sleGUI = new SLEInput(4,3);
     private BorderPane mainPane = new BorderPane();
     private Slider matrixSize = new Slider();
     private Button solveSLE = new Button("Решить СЛАУ");

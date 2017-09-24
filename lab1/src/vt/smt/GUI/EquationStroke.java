@@ -52,6 +52,11 @@ public class EquationStroke extends HBox {
         }
         return ans;
     }
+    public void setValues(Double[] values){
+        setLength(values.length);
+        for(int i = 0, k = 0; i < getChildren().size();i+=2, k++)
+            ((TextField)this.getChildren().get(i)).setText(Double.toString(values[k]));
+    }
     public void setLength(int number){
         // Умножаем или делим на два, потому что после каждго инпута есть лейбл
         if(number > getNumber()/2)
