@@ -109,7 +109,6 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
             columnsToSkip.add(mainPos.getValue());
         }
 
-        System.out.println("Before mormalize: ");
         vt.smt.MyMath.Util.printMatrix(this.get());
         normalize();
         isTriangle = true;
@@ -120,11 +119,6 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
 
     public void normalize(){
         // Обязательно есть колонка с количеством нулей от n до n-1
-//        for (int i = 0; i < getY(); i++)try {
-//             swapStrokes(findStrokeWithZeros(getX() - i - 1), getX() - i - 1);
-//        }catch (IndexOutOfBoundsException e){
-//            System.out.println(e.getMessage());
-//        }
         int k = 0;
         for(int i = getY()-1; i >= 0; i--)try{
             swapColumns(
@@ -135,8 +129,15 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
             System.out.println(e.getMessage());
         }
 
-        System.out.println(this);
-
+        k = 0;
+        for(int i = getX()-1; i >= 0;i--)try{
+            swapStrokes(
+                    findStrokeWithoutZeros(i),
+                    k++
+            );
+        }catch (IndexOutOfBoundsException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public void swapStrokes(int i, int j){
@@ -177,28 +178,24 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         noticeAll(new SwapLines(i, j, false), 200);
     }
 
-    // Which stroke contains zerosNumber zeros?
-//    private int findStrokeWithZeros(int zerosNumber) throws IndexOutOfBoundsException{
-//        int currentZero = -1;
-//
-//        for(int i = 0; i < getY(); i++) {
-//
-//            currentZero = 0 ;
-//
-//            for (int j = 0; j < getX(); j++)
-//                if(get(i,j) == 0.0)
-//                    currentZero++;
-//
-//            if(currentZero == zerosNumber)
-//                return i;
-//        }
-//        System.out.println(this);
-//        throw new IndexOutOfBoundsException("There's no a stroke with " + zerosNumber + " zeros!");
-//    }
+    private int findStrokeWithoutZeros(int count) throws IndexOutOfBoundsException{
+        int currentZero = 0;
+
+        for(int i = 0; i < getY() ; i++) {
+            currentZero = 0 ;
+            for (int j = 0; j < getX()-1; j++)
+                if(get(i,j) != 0.0)
+                    currentZero++;
+
+            if(currentZero == count)
+                return i;
+        }
+
+        throw new IndexOutOfBoundsException("There's no a stroke with " + count + " zeros!");
+    }
 
     private int findColumnWithZeros(int count) throws IndexOutOfBoundsException{
         int currentZero = 0;
-
         for(int i = 0; i < getX() ; i++) {
             currentZero = 0 ;
             for (int j = 0; j < getY(); j++)
@@ -208,7 +205,6 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
             if(currentZero == count)
                 return i;
         }
-        System.out.println(this);
         throw new IndexOutOfBoundsException("There's no a column with " + count + " zeros!");
     }
 
