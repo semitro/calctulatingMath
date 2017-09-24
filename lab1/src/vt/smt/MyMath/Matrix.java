@@ -3,12 +3,21 @@ package vt.smt.MyMath;
 
 import com.sun.istack.internal.Nullable;
 import javafx.util.Pair;
+import vt.smt.GUI.Observer.*;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
-
-public class Matrix {
+public class Matrix implements vt.smt.GUI.Observer.Observable {
     // First - stroke
+    private List<vt.smt.GUI.Observer.Observer> observers = new LinkedList<>();
+
+    @Override
+    public void subscribe(Observer observer) {
+        observers.add(observer);
+    }
+
     public Matrix(Double m[][]){
         int s1 = m.length;
         int s2 = m[0].length;
@@ -38,12 +47,16 @@ public class Matrix {
         for(int i = 0; i < getY(); i++) {
             if(without != null && without.contains(i))
                 continue;
-            for (int j = 0; j < getX(); j++)
+            for (int j = 0; j < getX(); j++) {
+                for (Observer ob:observers)
+                    ob.notice(new ChooseCeil(new Pair<Integer, Integer>(i,j),"justSelectedElement"));
+
                 if (Math.abs(m[i][j]) > currentMax) {
                     x = i;
                     y = j;
                     currentMax = m[i][j];
                 }
+            }
         }
 
         return new Pair<>(x,y);
@@ -53,15 +66,15 @@ public class Matrix {
     public void triangulate(){
         if(isTriangle) // If the matrix is already triangle there's no reason to perform this function
             return;
-
         // We imitate closing strokes and columns using two Lists remembering which of its we need to skip
         // We use TreeSet Instead of LinkedList or something else because its have high
         Collection<Integer> strokesToSkip = new TreeSet<>();
         Collection<Integer> columnsToSkip = new TreeSet<>();
-        Pair<Integer, Integer> mainPos = null;
-        for(int loop = 0; loop < getY()-1;loop++) {
 
-            mainPos = findMaxAbs(strokesToSkip);
+        for(int loop = 0; loop < getY()-1;loop++) {
+            final Pair<Integer, Integer> mainPos = findMaxAbs(strokesToSkip);
+            observers.forEach(e->e.notice(new ChooseCeil(mainPos, new String("mainElementCeil"))));
+
             strokesToSkip.add(mainPos.getKey());
 
             Double main = get(mainPos.getKey(), mainPos.getValue());
@@ -72,7 +85,7 @@ public class Matrix {
 
                 // Coefficient to mul each stroke by this
                 Double factor = -get(i, mainPos.getValue()) / main;
-
+                System.out.println("factor: " + factor + " #main: " + main);
                 for (int j = 0; j < getX(); j++) {
                     if (columnsToSkip.contains(j))
                         continue;
@@ -90,13 +103,16 @@ public class Matrix {
         // (This operation use too many write-requests to slow RAM)
         // We will calculate, imitate, and imagine the matrix like its triangle
         */
+        System.out.println("Before mormilize: ");
+        vt.smt.MyMath.Util.printMatrix(this.get());
         normalize();
         isTriangle = true;
     }
     // We don't want to preform the triangle() function again
     boolean isTriangle = false;
 
-    private void normalize(){
+
+    public void normalize(){
         // Can we reduce the cycle steps?
         for (int i = 0; i < getY(); i++)try {
             swapStrokes(findStrokeWithZeros(getX() - i - 1), getX() - i - 1);

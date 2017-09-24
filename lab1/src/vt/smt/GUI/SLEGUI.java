@@ -9,10 +9,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import vt.smt.MyMath.Matrix;
 
 import java.io.File;
 import java.io.IOException;
-
 /**
  * Created by semitro on 23.09.17.
  */
@@ -37,7 +37,15 @@ public class SLEGUI extends Application{
         bottomBox.getChildren().addAll(fileButton,solveSLE);
         mainPane.setBottom(bottomBox);
         solveSLE.setOnMouseClicked(e->{
-
+            Matrix m = new Matrix(sleGUI.getMatrix());
+            // Связываем наблюдателя с источником событий
+            m.subscribe(sleGUI);
+            vt.smt.MyMath.Util.printMatrix(m.get());
+            System.out.println();
+            m.triangulate();
+            vt.smt.MyMath.Util.printMatrix(m.get());
+            m.normalize();
+            vt.smt.MyMath.Util.printMatrix(m.get());
         });
         fileButton.setOnMouseClicked(e->{
             File file = fileChooser.showOpenDialog(primaryStage);

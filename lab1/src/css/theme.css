@@ -9,6 +9,12 @@
      -fx-border-radius:5px;
      -fx-min-width: 20px;
 }
+#justSelectedElement{
+	-fx-background-color: #AAFF4d;
+}
+#mainElementCeil{
+	-fx-background-color: #FF4d4d;
+}
 .text-field {
         -fx-background-color: #1d1d1d;
 }

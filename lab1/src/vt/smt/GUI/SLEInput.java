@@ -1,12 +1,15 @@
 package vt.smt.GUI;
 
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-
+import vt.smt.GUI.Observer.MyEvent;
+import vt.smt.GUI.Observer.Observer;
+import vt.smt.GUI.Observer.*;
 /**
  * Created by semitro on 23.09.17.
  */
-class SLEInput extends Pane {
+class SLEInput extends Pane implements Observer {
 
     private VBox vBox = new VBox();
     public  SLEInput(int rows, int columns){
@@ -35,7 +38,19 @@ class SLEInput extends Pane {
         });
     }
 
+    // Чтобы отслеживать в гуи выполнение алгоритма
+    @Override
+    public void notice(MyEvent event) {
+        System.out.println(((ChooseCeil) event).getColorID());
+        if(event instanceof ChooseCeil)
+            getFiledNumber( ((ChooseCeil)event).getPosition().getKey(),  ((ChooseCeil)event).getPosition().getValue() )
+                    .setId( ((ChooseCeil)event).getColorID() );
 
+    }
+
+    public TextField getFiledNumber(int i, int j){
+        return (TextField)((EquationStroke)vBox.getChildren().get(i)).getFieldNumber(j);
+    }
     public int getRows(){
         return vBox.getChildren().size();
     }

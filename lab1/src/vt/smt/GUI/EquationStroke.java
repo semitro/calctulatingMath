@@ -73,4 +73,7 @@ public class EquationStroke extends HBox {
         //Ссылки??
         this.addRow(prototype.getNumber() - this.getNumber());
     }
+    public TextField getFieldNumber(int i){
+        return (TextField)getChildren().get(i*2);
+    }
 }
