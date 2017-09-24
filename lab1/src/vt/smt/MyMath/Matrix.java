@@ -4,11 +4,10 @@ package vt.smt.MyMath;
 import com.sun.istack.internal.Nullable;
 import javafx.util.Pair;
 import vt.smt.GUI.Observer.*;
+import vt.smt.GUI.Observer.Observer;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
+
 public class Matrix implements vt.smt.GUI.Observer.Observable {
     // First - stroke
     private List<vt.smt.GUI.Observer.Observer> observers = new LinkedList<>();
@@ -21,7 +20,7 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
     public void noticeAll(MatrixEvent event, int delay){
         observers.forEach(e->e.notice(event));
         try {
-            Thread.currentThread().sleep(delay+40);
+            Thread.currentThread().sleep(delay);
         }catch (InterruptedException e){
             e.printStackTrace();
         }
@@ -35,6 +34,13 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
                 this.m[i][j] = m[i][j];
 
     }
+    public Matrix(Matrix m, int size_y, int size_x){
+        this.m = new Double[size_y][size_x];
+        Double[][] inital = m.get();
+        for(int i = 0; i < size_y;i++)
+            this.m[i] = Arrays.copyOf(inital[i],size_x);
+        this.isTriangle = m.areYouTriangle();
+    }
     public boolean isSquare(){return m.length == m[0].length;}
     public int getX(){return m[0].length;}
     public int getY(){return m.length;}
@@ -45,6 +51,8 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         return m;
     }
     private Double m[][];
+    // We don't want to preform the triangle() function again
+    private boolean isTriangle = false;
 
     // Returns the position of the max absolute value
     // It can accepts the set of strokes to skip (we need this in Main-element-method
@@ -74,6 +82,7 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
 
     // Using Gaussian method with selection of the main element
     public void triangulate(){
+
         if(isTriangle) // If the matrix is already triangle there's no reason to perform this function
             return;
         // We imitate closing strokes and columns using two Lists remembering which of its we need to skip
@@ -113,10 +122,11 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         normalize();
         isTriangle = true;
     }
-    // We don't want to preform the triangle() function again
-    boolean isTriangle = false;
 
 
+    public boolean areYouTriangle(){
+        return isTriangle;
+    }
     public void normalize(){
         // Обязательно есть колонка с количеством нулей от n до n-1
         int k = 0;
@@ -215,9 +225,8 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         triangulate();
         Double det = 1.0;
         // Be careful with the borders
-        for(int i = getY()-1; i >= 0;i--)
-            det *= m[i][getY()-1-i];
-
+        for(int i = 0; i < getX();i++)
+            det *= m[i][i];
 
         return det;
     }
@@ -237,4 +246,8 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
 
         return str.toString();
     }
+
+//    public List<Double> solveSLAU(){
+//
+//    }
 }

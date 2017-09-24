@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -34,7 +35,7 @@ public class SLEGUI extends Application{
         });
 
         mainPane.setTop(matrixSize);
-
+        mainPane.setRight(determinantLabel);
         bottomBox.getChildren().addAll(fileButton,solveSLE);
         mainPane.setBottom(bottomBox);
         solveSLE.setOnMouseClicked(e->{
@@ -47,7 +48,9 @@ public class SLEGUI extends Application{
                     System.out.println();
                     m.triangulate();
                     sleGUI.resetStyles();
+                    Matrix square = new Matrix(m,m.getY(),m.getX()-1);
                     vt.smt.MyMath.Util.printMatrix(m.get());
+                    Platform.runLater(()->determinantLabel.setText("det основной матрицы:\n" + Double.toString(square.det())));
                 });
                 t.setDaemon(true);
                 t.start();
@@ -94,4 +97,5 @@ public class SLEGUI extends Application{
     private Button fileButton = new Button("Загрузить из файла");
     private FileChooser fileChooser = new FileChooser();
     private HBox bottomBox = new HBox();
+    private Label determinantLabel = new Label("det основной матрицы: ");
 }

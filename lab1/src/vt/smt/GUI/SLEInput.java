@@ -1,5 +1,6 @@
 package vt.smt.GUI;
 
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -45,51 +46,52 @@ class SLEInput extends Pane implements Observer {
     // Отрисовка изменений в самой матрице. Обработка сообщений от Obserable Matirx
     @Override
     public synchronized void notice(MyEvent event) {
-        resetStyles();
-        // Перекрашиваем цвет выбранной ячейки, меняя css-стиль
-        if(event instanceof ChooseCeil) {
-            lastNodeChanged.add(
+        Platform.runLater(()->{
+            resetStyles();
+            // Перекрашиваем цвет выбранной ячейки, меняя css-стиль
+            if(event instanceof ChooseCeil) {
+                lastNodeChanged.add(
+                        getFiledNumber( ((ChooseCeil)event).getPosition().getKey(),((ChooseCeil)event).getPosition().getValue())
+                );
                 getFiledNumber( ((ChooseCeil)event).getPosition().getKey(),((ChooseCeil)event).getPosition().getValue())
-            );
-            getFiledNumber( ((ChooseCeil)event).getPosition().getKey(),((ChooseCeil)event).getPosition().getValue())
-                    .setId( ((ChooseCeil)event).getColorID());
-        }
-        else
+                        .setId( ((ChooseCeil)event).getColorID());
+            }
+            else
             if(event instanceof ChangeCeil){
                 getFiledNumber( ((ChangeCeil)event ).getPosition().getKey(), ((ChangeCeil)event ).getPosition().getValue())
                         .setText(((ChangeCeil)event ).getText());
             }
-        else
-            if(event instanceof SwapLines){
-                if( ((SwapLines) event).isAboutRows()) {
+            else
+            if(event instanceof SwapLines) {
+                if (((SwapLines) event).isAboutRows()) {
                     lastNodeChanged.addAll(
-                            ((EquationStroke)vBox.getChildren().get(((SwapLines) event).getI()))
+                            ((EquationStroke) vBox.getChildren().get(((SwapLines) event).getI()))
                                     .getAllTextFields()
                     );
                     lastNodeChanged.addAll(
-                            ((EquationStroke)vBox.getChildren().get(((SwapLines) event).getJ()))
+                            ((EquationStroke) vBox.getChildren().get(((SwapLines) event).getJ()))
                                     .getAllTextFields()
                     );
 
-                    ((EquationStroke)vBox.getChildren().get(((SwapLines) event).getI()))
-                            .forEachInput(e->e.setId("lineIsChanging"));
-                    ((EquationStroke)vBox.getChildren().get(((SwapLines) event).getJ()))
-                            .forEachInput(e->e.setId("lineIsChanging"));
-                }
-                else{
-                    for(int i = 0; i < vBox.getChildren().size();i++) {
-                        ((EquationStroke)vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getI())
+                    ((EquationStroke) vBox.getChildren().get(((SwapLines) event).getI()))
+                            .forEachInput(e -> e.setId("lineIsChanging"));
+                    ((EquationStroke) vBox.getChildren().get(((SwapLines) event).getJ()))
+                            .forEachInput(e -> e.setId("lineIsChanging"));
+                } else {
+                    for (int i = 0; i < vBox.getChildren().size(); i++) {
+                        ((EquationStroke) vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getI())
                                 .setId("lineIsChanging");
-                        ((EquationStroke)vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getJ())
+                        ((EquationStroke) vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getJ())
                                 .setId("lineIsChanging");
                         lastNodeChanged.add(
-                                ((EquationStroke)vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getJ()));
+                                ((EquationStroke) vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getJ()));
                         lastNodeChanged.add(
-                                ((EquationStroke)vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getI()));
+                                ((EquationStroke) vBox.getChildren().get(i)).getFieldNumber(((SwapLines) event).getI()));
                     }
                 }
             }
 
+        });
     }
 
     // Эти поля нужны, чтобы вернуть все цвета назад
