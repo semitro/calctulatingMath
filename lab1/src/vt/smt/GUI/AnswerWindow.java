@@ -21,7 +21,6 @@ public class AnswerWindow extends Stage {
         matrixAndDet.getChildren().addAll(matrixInfoLabel,matrixTable,detLabel);
         mainPane.setCenter(matrixAndDet);
         mainPane.setBottom(answers);
-        mainPane.setRight(discrepancy);
     }
 
     public void setMatrix(Double[][] matrix){
@@ -50,6 +49,4 @@ public class AnswerWindow extends Stage {
     private Label matrixInfoLabel = new Label("Исходная матрица:");
     private Label answers = new Label();
     private SLEInput matrixTable;
-    // Столбец невязок
-    private Label discrepancy = new Label();
 }
