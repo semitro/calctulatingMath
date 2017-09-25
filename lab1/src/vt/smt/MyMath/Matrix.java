@@ -135,7 +135,7 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         }
 
         vt.smt.MyMath.Util.printMatrix(this.get());
-       // normalize();
+        normalize();
         isTriangle = true;
     }
 
@@ -145,25 +145,25 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
     }
     public void normalize(){
         // Обязательно есть колонки с количеством нулей от n до n-1
-        int k = 0;
-        for(int i = getY()-1; i >= 0; i--)try{
-            swapColumns(
-                    findColumnWithZeros(i),
-                    k++
-            );
-        }catch (IndexOutOfBoundsException e){
-            System.out.println(e.getMessage());
-        }
-
-//        k = 0;
-//        for(int i = getX(); i >= 0;i--)try{
-//            swapStrokes(
-//                    findStrokeWithoutZeros(i),
+//        int k = 0;
+//        for(int i = getY()-1; i >= 0; i--)try{
+//            swapColumns(
+//                    findColumnWithZeros(i),
 //                    k++
 //            );
 //        }catch (IndexOutOfBoundsException e){
 //            System.out.println(e.getMessage());
 //        }
+
+        int k = 0;
+        for(int i = getX(); i >= 0;i--)try{
+            swapStrokes(
+                    findStrokeWithoutZeros(i),
+                    k++
+            );
+        }catch (IndexOutOfBoundsException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public void swapStrokes(int i, int j){
