@@ -103,12 +103,13 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
 
                 // Coefficient to mul each column by this
                 Double factor = -get(i, mainPos.getValue()) / main;
+
                 for (int j = 0; j < getX(); j++) {
                     if (columnsToSkip.contains(j))
                         continue;
                     // Прибавляем почленно главную строку, умножив её на коэффициент
                     m[i][j] += get(mainPos.getKey(), j) * factor;
-                    if(Math.abs(m[i][j]) < 7.440892098500626E-16 )
+                    if(Math.abs(m[i][j]) < 5.440892098500626E-16 )
                         m[i][j] = 0.0;
                     noticeAll(new ChangeCeil(new Pair<Integer, Integer>(i,j),Double.toString(m[i][j])),50);
                 }
@@ -247,7 +248,17 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         return str.toString();
     }
 
-//    public List<Double> solveSLAU(){
+    // Если берём расширенную матрицу
+    public Double[] getAnswersSLAU(){
+        Double xxs[] = new Double[getY()-1];
+        int currentX = getY()-1;
+        Double factor = 1.0;
+        // Допилить на свежую голову!
+//        for(int i = getY()-1; i >= 0; i--)
+//            for(int mulJ = getX()-1; mulJ >= xxs.length - i;mulJ--)
 //
-//    }
+//            xxs[i] = factor/get()
+
+        return xxs;
+    }
 }

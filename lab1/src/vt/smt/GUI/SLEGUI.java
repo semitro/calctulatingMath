@@ -36,8 +36,9 @@ public class SLEGUI extends Application{
 
         mainPane.setTop(matrixSize);
         mainPane.setRight(determinantLabel);
-        bottomBox.getChildren().addAll(fileButton,solveSLE);
+        bottomBox.getChildren().addAll(fileButton,solveSLE,fillRandomButton);
         mainPane.setBottom(bottomBox);
+        sleGUI.setStageToKeepPopUp(primaryStage);
         solveSLE.setOnMouseClicked(e->{
             Matrix m = new Matrix(sleGUI.getMatrix());
             // Связываем наблюдателя с источником событий
@@ -51,12 +52,15 @@ public class SLEGUI extends Application{
                     Matrix square = new Matrix(m,m.getY(),m.getX()-1);
                     vt.smt.MyMath.Util.printMatrix(m.get());
                     Platform.runLater(()->determinantLabel.setText("det основной матрицы:\n" + Double.toString(square.det())));
+                    sleGUI.notice(new vt.smt.GUI.Observer.PopUpText
+                            ("det основной матрицы:\n" + Double.toString(square.det())));
                 });
                 t.setDaemon(true);
                 t.start();
             });
 
         });
+
         fileButton.setOnMouseClicked(e->{
             File file = fileChooser.showOpenDialog(primaryStage);
             try {
@@ -70,6 +74,9 @@ public class SLEGUI extends Application{
                 alert.show();
                 exception.printStackTrace();
             }
+        });
+        fillRandomButton.setOnMouseClicked(e->{
+            sleGUI.setMatrix(vt.smt.MyMath.Util.getRandomMatrix());
         });
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -88,14 +95,17 @@ public class SLEGUI extends Application{
         matrixSize.setMinorTickCount(1);
         matrixSize.setShowTickLabels(true);
         fileChooser.setInitialDirectory(new File("tests"));
+        determinantLabel.setId("determinantLabel");
     }
 
-    SLEInput sleGUI = new SLEInput(4,3);
+    private SLEInput sleGUI = new SLEInput(4,3);
     private BorderPane mainPane = new BorderPane();
     private Slider matrixSize = new Slider();
+    private Button fillRandomButton = new Button("Тебе не повезёт");
     private Button solveSLE = new Button("Решить СЛАУ");
     private Button fileButton = new Button("Загрузить из файла");
     private FileChooser fileChooser = new FileChooser();
     private HBox bottomBox = new HBox();
     private Label determinantLabel = new Label("det основной матрицы: ");
+
 }

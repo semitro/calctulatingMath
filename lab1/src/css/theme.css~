@@ -7,7 +7,7 @@
      -fx-color: #BABdBd;
      -fx-font-size:12px;
      -fx-border-radius:5px;
-     -fx-min-width: 20px;
+     -fx-min-width: 21px;
 }
 #justSelectedElement{
 	-fx-background-color: #AAFF4d;
@@ -19,7 +19,14 @@
 	-fx-background-color: #FF4d4d;
 }
 #lineIsChanging{
-	-fx-background-color: #CF4d4d;
+	-fx-background-color: #BF4dAB;
+}
+
+#determinantLabel{
+	-fx-font-size:20px;
+}
+#popUpText{
+	     -fx-background-color: transparent;
 }
 .text-field {
         -fx-background-color: #1d1d1d;

@@ -19,7 +19,15 @@
 	-fx-background-color: #FF4d4d;
 }
 #lineIsChanging{
-	-fx-background-color: #CF4d4d;
+	-fx-background-color: #BF4dAB;
+}
+
+#determinantLabel{
+	-fx-font-size:20px;
+	-fx-color: #ABFCFA;
+}
+#popUpText{
+	     -fx-background-color: transparent;
 }
 .text-field {
         -fx-background-color: #1d1d1d;

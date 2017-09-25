@@ -2,10 +2,7 @@ package vt.smt.MyMath;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by semitro on 23.09.17.
@@ -34,6 +31,14 @@ public class Util {
             j = 0;
         }
         return numbers;
+    }
+    public static Matrix getRandomMatrix(){
+        Random random = new Random(System.currentTimeMillis());
+        int size = random.nextInt(7);
+        size+=3;
+        Double m[][] = new Double[size-1][size];
+        Arrays.asList(m).forEach(e->Arrays.fill(e,random.nextInt(25) + random.nextDouble()));
+        return new Matrix(m);
     }
     public static void printMatrix(Double[][] m){
         for (int i = 0; i < m.length; i++) {

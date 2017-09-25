@@ -1,14 +1,23 @@
 package vt.smt.GUI;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import vt.smt.GUI.Observer.*;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by semitro on 23.09.17.
@@ -90,6 +99,35 @@ class SLEInput extends Pane implements Observer {
                     }
                 }
             }
+            else // Крутящаяся красота
+            if(event instanceof PopUpText){
+                Random r = new Random(System.currentTimeMillis());
+
+                Label label = new Label( ((PopUpText)event).getStr());
+                RotateTransition rotate = new RotateTransition(Duration.millis(7400),label);
+                rotate.setByAngle(45 + r.nextInt(15));
+                ScaleTransition scale = new ScaleTransition(Duration.millis(7500),label);
+                scale.setByX(3);
+                scale.setByY(3);
+                FadeTransition fade = new FadeTransition(Duration.millis(5800),label);
+                fade.setToValue(0);
+                fade.setDelay(Duration.millis(2000));
+                ParallelTransition parallelTransition = new ParallelTransition();
+                parallelTransition.getChildren().addAll(
+                  rotate,scale,fade
+                );
+                Popup popup = new Popup();
+                label.setId("popUpText");
+                popup.getContent().add(label);
+                popup.show(stageToKeepPopUp);
+                parallelTransition.setDelay(Duration.millis(200));
+                parallelTransition.play();
+
+                popup.setX(r.nextDouble() + r.nextInt(860));
+                popup.setY(r.nextDouble() + r.nextInt(500));
+
+                System.out.println(((PopUpText)event).getStr());
+                }
 
         });
     }
@@ -97,15 +135,8 @@ class SLEInput extends Pane implements Observer {
     // Эти поля нужны, чтобы вернуть все цвета назад
     private List<Node> lastNodeChanged = new LinkedList<>();
     public void resetStyles(){
-            if(lastNodeChanged.isEmpty())
-                return;
-
-            for (Node l : lastNodeChanged) try { l.setId("inputValueCeil");
-            }catch (Exception e){
-                // do nothing. It's wrong, but xren c nim pocka chto. Вылазиет неочевидный ArrayOutOfBound exeption
-            }
-
-        lastNodeChanged.clear();
+            for (Node l : lastNodeChanged) l.setId("inputValueCeil");
+            lastNodeChanged.clear();
     }
     public TextField getFiledNumber(int i, int j){
         return (TextField)((EquationStroke)vBox.getChildren().get(i)).getFieldNumber(j);
@@ -117,11 +148,15 @@ class SLEInput extends Pane implements Observer {
         return ((EquationStroke)vBox.getChildren().get(0)).getNumber();
 
     }
-    Double[][] getMatrix() {
+    public Double[][] getMatrix() {
         Double[][] ans = new Double[getRows()][getColumns()];
         for (int i = 0; i < ans.length; i++)
             ans[i] = ((EquationStroke) vBox.getChildren().get(i)).getValues();
         return ans;
     }
+    private Stage stageToKeepPopUp;
 
+    public void setStageToKeepPopUp(Stage stageToKeepPopUp) {
+        this.stageToKeepPopUp = stageToKeepPopUp;
+    }
 }
