@@ -119,14 +119,13 @@ class SLEInput extends Pane implements Observer {
                 Popup popup = new Popup();
                 label.setId("popUpText");
                 popup.getContent().add(label);
+                popup.setY(r.nextDouble() + r.nextInt(500));
                 popup.show(stageToKeepPopUp);
                 parallelTransition.setDelay(Duration.millis(200));
                 parallelTransition.play();
-
+                parallelTransition.setOnFinished(e->popup.hide());
                 popup.setX(r.nextDouble() + r.nextInt(860));
-                popup.setY(r.nextDouble() + r.nextInt(500));
 
-                System.out.println(((PopUpText)event).getStr());
                 }
 
         });

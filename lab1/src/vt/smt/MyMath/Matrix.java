@@ -20,7 +20,7 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
     public void noticeAll(MatrixEvent event, int delay){
         observers.forEach(e->e.notice(event));
         try {
-            Thread.currentThread().sleep(delay);
+            Thread.currentThread().sleep(delay+5);
         }catch (InterruptedException e){
             e.printStackTrace();
         }
@@ -63,6 +63,7 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         for(int i = 0; i < getY(); i++) {
             if(withoutRow != null && withoutRow.contains(i))
                 continue;
+
             for (int j = 0; j < getX(); j++) {
                 if(withoutColumn != null && withoutColumn.contains(j))
                     continue;
@@ -79,10 +80,22 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
 
         return new Pair<>(x,y);
     }
+    public int finMaxAbsInColumn(int column, @Nullable Collection<Integer> withoutRow){
+        Double max = 0.0;
+        int position = 0;
+        for (int i = 0; i < getY();i++){
+            if(withoutRow.contains(i))
+                continue;
+            if(Math.abs(m[i][column]) > max) {
+                max = Math.abs(m[i][column]);
+                position = i;
+            }
 
+        }
+        return position;
+    }
     // Using Gaussian method with selection of the main element
     public void triangulate(){
-
         if(isTriangle) // If the matrix is already triangle there's no reason to perform this function
             return;
         // We imitate closing strokes and columns using two Lists remembering which of its we need to skip
@@ -91,36 +104,38 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         Collection<Integer> columnsToSkip = new TreeSet<>();
 
         for(int loop = 0; loop < getY();loop++) {
-            final Pair<Integer, Integer> mainPos = findMaxAbs(strokesToSkip,columnsToSkip);
-            noticeAll(new ChooseCeil(mainPos, new String("mainElementCeil")),40);
-            strokesToSkip.add(mainPos.getKey());
+            //final Pair<Integer, Integer> mainPos = findMaxAbs(strokesToSkip,columnsToSkip);
+            int mainPositionY = finMaxAbsInColumn(loop,strokesToSkip);
+           // noticeAll(new ChooseCeil(mainPos, "mainElementCeil"),40);
+            noticeAll(new ChooseCeil(new Pair<Integer, Integer>(mainPositionY,loop), "mainElementCeil"),400);           // strokesToSkip.add(mainPos.getKey());
+            strokesToSkip.add(mainPositionY);
 
-            Double main = get(mainPos.getKey(), mainPos.getValue());
-
+           // Double main = get(mainPos.getKey(), mainPos.getValue());
+            Double main = m[mainPositionY][loop];
             for (int i = 0; i < getY(); i++) {
                 if (strokesToSkip.contains(i)) // We don't need to mul the main stroke by itself
                     continue;
 
                 // Coefficient to mul each column by this
-                Double factor = -get(i, mainPos.getValue()) / main;
-
+//                Double factor = -get(i, mainPos.getValue()) / main;
+                Double factor = -get(i, loop) / main;
                 for (int j = 0; j < getX(); j++) {
-                    if (columnsToSkip.contains(j))
-                        continue;
+//                    if (columnsToSkip.contains(j))
+//                        continue;
                     // Прибавляем почленно главную строку, умножив её на коэффициент
-                    m[i][j] += get(mainPos.getKey(), j) * factor;
-                    if(Math.abs(m[i][j]) < 5.440892098500626E-16 )
+                    m[i][j] += get(mainPositionY, j) * factor;
+                    if(Math.abs(m[i][j]) < 10.440892098500626E-12 )
                         m[i][j] = 0.0;
                     noticeAll(new ChangeCeil(new Pair<Integer, Integer>(i,j),Double.toString(m[i][j])),50);
                 }
 
             }
-            // At first we need to close the column to skip it later
-            columnsToSkip.add(mainPos.getValue());
+            // we need to close the column to skip it later
+            //columnsToSkip.add(mainPos.getValue());
         }
 
         vt.smt.MyMath.Util.printMatrix(this.get());
-        normalize();
+       // normalize();
         isTriangle = true;
     }
 
@@ -129,7 +144,7 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         return isTriangle;
     }
     public void normalize(){
-        // Обязательно есть колонка с количеством нулей от n до n-1
+        // Обязательно есть колонки с количеством нулей от n до n-1
         int k = 0;
         for(int i = getY()-1; i >= 0; i--)try{
             swapColumns(
@@ -140,15 +155,15 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
             System.out.println(e.getMessage());
         }
 
-        k = 0;
-        for(int i = getX()-1; i >= 0;i--)try{
-            swapStrokes(
-                    findStrokeWithoutZeros(i),
-                    k++
-            );
-        }catch (IndexOutOfBoundsException e){
-            System.out.println(e.getMessage());
-        }
+//        k = 0;
+//        for(int i = getX(); i >= 0;i--)try{
+//            swapStrokes(
+//                    findStrokeWithoutZeros(i),
+//                    k++
+//            );
+//        }catch (IndexOutOfBoundsException e){
+//            System.out.println(e.getMessage());
+//        }
     }
 
     public void swapStrokes(int i, int j){
@@ -207,7 +222,8 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
 
     private int findColumnWithZeros(int count) throws IndexOutOfBoundsException{
         int currentZero = 0;
-        for(int i = 0; i < getX() ; i++) {
+        // Минус один, потому что мы не имеем права переставлять столбец ответов
+        for(int i = 0; i < getX()-1 ; i++) {
             currentZero = 0 ;
             for (int j = 0; j < getY(); j++)
                 if(get(j,i) == 0.0)

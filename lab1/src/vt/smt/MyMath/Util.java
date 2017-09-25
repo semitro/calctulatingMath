@@ -37,7 +37,10 @@ public class Util {
         int size = random.nextInt(7);
         size+=3;
         Double m[][] = new Double[size-1][size];
-        Arrays.asList(m).forEach(e->Arrays.fill(e,random.nextInt(25) + random.nextDouble()));
+        for (int i = 0; i < m.length; i++)
+            for (int j = 0; j < m[0].length ; j++)
+                m[i][j] = random.nextInt(25)+random.nextDouble()-15;
+
         return new Matrix(m);
     }
     public static void printMatrix(Double[][] m){

@@ -28,6 +28,9 @@
 }
 #popUpText{
 	     -fx-background-color: transparent;
+	     -fx-color: #FFFFFF;
+		-fx-text-fill: white;
+	   
 }
 .text-field {
         -fx-background-color: #1d1d1d;

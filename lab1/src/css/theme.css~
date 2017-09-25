@@ -24,9 +24,12 @@
 
 #determinantLabel{
 	-fx-font-size:20px;
+	-fx-color: #ABFCFA;
 }
 #popUpText{
 	     -fx-background-color: transparent;
+	     -fx-color: #FFFFFF;
+	   
 }
 .text-field {
         -fx-background-color: #1d1d1d;

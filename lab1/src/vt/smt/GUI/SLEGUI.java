@@ -38,6 +38,7 @@ public class SLEGUI extends Application{
         mainPane.setRight(determinantLabel);
         bottomBox.getChildren().addAll(fileButton,solveSLE,fillRandomButton);
         mainPane.setBottom(bottomBox);
+        mainPane.setRight(animationSpeedSlider);
         sleGUI.setStageToKeepPopUp(primaryStage);
         solveSLE.setOnMouseClicked(e->{
             Matrix m = new Matrix(sleGUI.getMatrix());
@@ -101,11 +102,11 @@ public class SLEGUI extends Application{
     private SLEInput sleGUI = new SLEInput(4,3);
     private BorderPane mainPane = new BorderPane();
     private Slider matrixSize = new Slider();
-    private Button fillRandomButton = new Button("Тебе не повезёт");
+    private Button fillRandomButton = new Button("Тебе повезёт");
     private Button solveSLE = new Button("Решить СЛАУ");
     private Button fileButton = new Button("Загрузить из файла");
     private FileChooser fileChooser = new FileChooser();
     private HBox bottomBox = new HBox();
     private Label determinantLabel = new Label("det основной матрицы: ");
-
+    private Slider animationSpeedSlider = new Slider(0,1000,100);
 }
