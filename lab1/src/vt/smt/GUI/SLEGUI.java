@@ -2,6 +2,7 @@ package vt.smt.GUI;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -33,40 +34,21 @@ public class SLEGUI extends Application{
             if(newValue.intValue() != oldValue.intValue())
                  sleGUI.setSize(newValue.intValue()+1, newValue.intValue());
         });
-
+        animationSpeedSlider.valueProperty().addListener((e,oldValue,newValue)->{
+            m.setDelayAfterotice(newValue.intValue());
+        } );
         mainPane.setTop(matrixSize);
-        mainPane.setRight(determinantLabel);
         bottomBox.getChildren().addAll(fileButton,solveSLE,fillRandomButton);
         mainPane.setBottom(bottomBox);
         mainPane.setRight(animationSpeedSlider);
         sleGUI.setStageToKeepPopUp(primaryStage);
-        solveSLE.setOnMouseClicked(e->{
-            Matrix m = new Matrix(sleGUI.getMatrix());
-            // Связываем наблюдателя с источником событий
-            m.subscribe(sleGUI);
-            Platform.runLater(()->{
-                Thread t = new Thread(()->{
-                    vt.smt.MyMath.Util.printMatrix(m.get());
-                    System.out.println();
-                    m.triangulate();
-                    sleGUI.resetStyles();
-                    Matrix square = new Matrix(m,m.getY(),m.getX()-1);
-                    vt.smt.MyMath.Util.printMatrix(m.get());
-                    Platform.runLater(()->determinantLabel.setText("det основной матрицы:\n" + Double.toString(square.det())));
-                    sleGUI.notice(new vt.smt.GUI.Observer.PopUpText
-                            ("det основной матрицы:\n" + Double.toString(square.det())));
-                });
-                t.setDaemon(true);
-                t.start();
-            });
-
-        });
+        solveSLE.setOnMouseClicked(e->onSolveSLEClicked());
 
         fileButton.setOnMouseClicked(e->{
             File file = fileChooser.showOpenDialog(primaryStage);
             try {
-                vt.smt.MyMath.Matrix matrix = new vt.smt.MyMath.Matrix(vt.smt.MyMath.Util.loadMatrixFromFile(file));
-                sleGUI.setMatrix(matrix);
+                m = new vt.smt.MyMath.Matrix(vt.smt.MyMath.Util.loadMatrixFromFile(file));
+                sleGUI.setMatrix(m);
             }catch (IOException | NumberFormatException | IndexOutOfBoundsException exception){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText("Убедитесь в адекватности файла");
@@ -77,13 +59,34 @@ public class SLEGUI extends Application{
             }
         });
         fillRandomButton.setOnMouseClicked(e->{
-            sleGUI.setMatrix(vt.smt.MyMath.Util.getRandomMatrix());
+            m = vt.smt.MyMath.Util.getRandomMatrix();
+            sleGUI.setMatrix(m);
         });
         primaryStage.setScene(scene);
         primaryStage.show();
 
     }
+    private Matrix m;
+    private void onSolveSLEClicked(){
+         m = new Matrix(sleGUI.getMatrix());
 
+        // Связываем наблюдателя с источником событий
+        m.subscribe(sleGUI);
+        Platform.runLater(()->{
+            Thread t = new Thread(()->{
+                vt.smt.MyMath.Util.printMatrix(m.get());
+                System.out.println();
+                m.triangulate();
+                sleGUI.resetStyles();
+                Matrix square = new Matrix(m,m.getY(),m.getX()-1);
+                vt.smt.MyMath.Util.printMatrix(m.get());
+                sleGUI.notice(new vt.smt.GUI.Observer.PopUpText
+                        ("det основной матрицы:\n" + Double.toString(square.det())));
+            });
+            t.setDaemon(true);
+            t.start();
+        });
+    }
     @Override
     public void init() throws Exception {
         super.init();
@@ -96,7 +99,10 @@ public class SLEGUI extends Application{
         matrixSize.setMinorTickCount(1);
         matrixSize.setShowTickLabels(true);
         fileChooser.setInitialDirectory(new File("tests"));
-        determinantLabel.setId("determinantLabel");
+        animationSpeedSlider.setOrientation(Orientation.VERTICAL);
+        animationSpeedSlider.setRotate(180);
+        animationSpeedSlider.setShowTickLabels(true);
+        animationSpeedSlider.setShowTickMarks(true);
     }
 
     private SLEInput sleGUI = new SLEInput(4,3);
@@ -107,6 +113,5 @@ public class SLEGUI extends Application{
     private Button fileButton = new Button("Загрузить из файла");
     private FileChooser fileChooser = new FileChooser();
     private HBox bottomBox = new HBox();
-    private Label determinantLabel = new Label("det основной матрицы: ");
-    private Slider animationSpeedSlider = new Slider(0,1000,100);
+    private Slider animationSpeedSlider = new Slider(0,4000,100);
 }

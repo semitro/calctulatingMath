@@ -17,10 +17,15 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         observers.add(observer);
     }
 
+    public void setDelayAfterotice(int mills){
+        noticeDelay = mills;
+    }
+    private int noticeDelay = 10;
     public void noticeAll(MatrixEvent event, int delay){
         observers.forEach(e->e.notice(event));
+        if (noticeDelay > 0)
         try {
-            Thread.currentThread().sleep(delay+5);
+            Thread.currentThread().sleep(delay+noticeDelay);
         }catch (InterruptedException e){
             e.printStackTrace();
         }
@@ -86,7 +91,9 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
         for (int i = 0; i < getY();i++){
             if(withoutRow.contains(i))
                 continue;
+            noticeAll(new ChooseCeil(new Pair<Integer, Integer>(i,column),"justSelectedElement"),40);
             if(Math.abs(m[i][column]) > max) {
+                noticeAll(new ChooseCeil(new Pair<Integer, Integer>(i,column),"newMaximumElement"),40);
                 max = Math.abs(m[i][column]);
                 position = i;
             }

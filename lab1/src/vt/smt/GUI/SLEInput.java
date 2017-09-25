@@ -133,7 +133,7 @@ class SLEInput extends Pane implements Observer {
 
     // Эти поля нужны, чтобы вернуть все цвета назад
     private List<Node> lastNodeChanged = new LinkedList<>();
-    public void resetStyles(){
+    public synchronized void resetStyles(){
             for (Node l : lastNodeChanged) l.setId("inputValueCeil");
             lastNodeChanged.clear();
     }
