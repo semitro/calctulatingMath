@@ -273,15 +273,34 @@ public class Matrix implements vt.smt.GUI.Observer.Observable {
 
     // Если берём расширенную матрицу
     public Double[] getAnswersSLAU(){
-        Double xxs[] = new Double[getY()-1];
-        int currentX = getY()-1;
-        Double factor = 1.0;
-        // Допилить на свежую голову!
-//        for(int i = getY()-1; i >= 0; i--)
-//            for(int mulJ = getX()-1; mulJ >= xxs.length - i;mulJ--)
-//
-//            xxs[i] = factor/get()
+        // Иксов ровно столько, сколько стоблцов - 1
+        Double x[] = new Double[getX()-1];
 
-        return xxs;
+        // x1 = y[i]/coeff;
+        // x2 = (y[i] - x2*coeffx2) / coeff
+        //          |lin comb|
+        // Подсчитываем ответы,  начиная с конца
+        for(int i = getY()-1;i>=0;i--){
+            double linCombSum = 0.0;
+            for (int j = i+1; j < x.length; j++) {
+                linCombSum += m[i][j]*x[j];
+            }
+            x[i] = (m[i][getX()-1] - linCombSum) / m[i][i];
+
+        }
+        return x;
+    }
+
+    // Подсчитать неувязку
+    public Double[] getDiscrepancy(Double[] x){
+        Double[] ans = new Double[getY()];
+        for (int i = 0; i < getY(); i++) {
+            Double lineComb = 0.0;
+            for (int j = 0; j < getX()-1; j++) {
+                lineComb += x[j]*m[i][j];
+            }
+            ans[i] = Math.abs(lineComb - m[i][getX()-1]);
+        }
+        return ans;
     }
 }

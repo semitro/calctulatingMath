@@ -30,8 +30,6 @@ class SLEInput extends Pane implements Observer {
         vBox.setSpacing(5);
         setSize(rows,columns);
         this.getChildren().add(vBox);
-        //this.setStyle("fx-min");
-
     }
 
     public void setMatrix(vt.smt.MyMath.Matrix matrix){
@@ -105,16 +103,16 @@ class SLEInput extends Pane implements Observer {
 
                 Label label = new Label( ((PopUpText)event).getStr());
                 RotateTransition rotate = new RotateTransition(Duration.millis(7400),label);
-                rotate.setByAngle(45 + r.nextInt(15));
+                rotate.setByAngle(r.nextInt(180)-90);
                 ScaleTransition scale = new ScaleTransition(Duration.millis(7500),label);
-                scale.setByX(3);
-                scale.setByY(3);
+                scale.setByX(3.2);
+                scale.setByY(3.2);
                 FadeTransition fade = new FadeTransition(Duration.millis(5800),label);
                 fade.setToValue(0);
                 fade.setDelay(Duration.millis(2000));
                 ParallelTransition parallelTransition = new ParallelTransition();
                 parallelTransition.getChildren().addAll(
-                  rotate,scale,fade
+                  scale,fade,rotate
                 );
                 Popup popup = new Popup();
                 label.setId("popUpText");

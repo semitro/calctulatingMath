@@ -6,7 +6,6 @@ import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -16,6 +15,8 @@ import vt.smt.MyMath.Matrix;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+
 /**
  * Created by semitro on 23.09.17.
  */
@@ -26,9 +27,13 @@ public class SLEGUI extends Application{
     }
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(mainPane,800,600);
+        Scene scene = new Scene(mainPane,820,272);
+        primaryStage.setTitle("Решение слау методом Гаусса оффлайн");
         scene.getStylesheets().add("css/theme.css");
-        mainPane.setCenter(sleGUI);
+        HBox spaceSLEGUI = new HBox(40);
+        spaceSLEGUI.getChildren().add(sleGUI);
+        spaceSLEGUI.setTranslateX(40);
+        mainPane.setCenter(spaceSLEGUI);
         primaryStage.setOnCloseRequest(e->System.exit(0));
         matrixSize.valueProperty().addListener( (e,oldValue,newValue)->{
             if(newValue.intValue() != oldValue.intValue())
@@ -69,7 +74,8 @@ public class SLEGUI extends Application{
     private Matrix m;
     private void onSolveSLEClicked(){
          m = new Matrix(sleGUI.getMatrix());
-
+         Double[][] initalMatrix = sleGUI.getMatrix().clone();
+         answerWindow.setMatrix(initalMatrix);
         // Связываем наблюдателя с источником событий
         m.subscribe(sleGUI);
         Platform.runLater(()->{
@@ -77,11 +83,21 @@ public class SLEGUI extends Application{
                 vt.smt.MyMath.Util.printMatrix(m.get());
                 System.out.println();
                 m.triangulate();
+                System.out.println("Слау: ");
+                System.out.println(Arrays.asList(m.getAnswersSLAU()));
+
                 sleGUI.resetStyles();
                 Matrix square = new Matrix(m,m.getY(),m.getX()-1);
                 vt.smt.MyMath.Util.printMatrix(m.get());
+                Double det = square.det();
                 sleGUI.notice(new vt.smt.GUI.Observer.PopUpText
-                        ("det основной матрицы:\n" + Double.toString(square.det())));
+                        ("det основной матрицы:\n" + Double.toString(det)));
+                System.out.println(Arrays.asList(m.getDiscrepancy(m.getAnswersSLAU())));
+                Platform.runLater(()->{
+                    answerWindow.setDet(det);
+                    answerWindow.setAnswers(m.getAnswersSLAU());
+                    answerWindow.show();
+                });
             });
             t.setDaemon(true);
             t.start();
@@ -114,4 +130,5 @@ public class SLEGUI extends Application{
     private FileChooser fileChooser = new FileChooser();
     private HBox bottomBox = new HBox();
     private Slider animationSpeedSlider = new Slider(0,4000,100);
+    private AnswerWindow answerWindow = new AnswerWindow();
 }

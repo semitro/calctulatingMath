@@ -29,6 +29,7 @@
 #popUpText{
 	     -fx-background-color: transparent;
 	     -fx-color: #FFFFFF;
+		-fx-text-fill: white;
 	   
 }
 .text-field {
