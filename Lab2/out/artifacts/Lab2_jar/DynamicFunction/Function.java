@@ -3,6 +3,6 @@ package DynamicFunction;
 public class Function{
 
     public static double f(double x){
-        return 250;
+        return x - 15;
     }
 }
