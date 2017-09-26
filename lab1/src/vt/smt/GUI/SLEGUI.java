@@ -83,7 +83,7 @@ public class SLEGUI extends Application{
                 vt.smt.MyMath.Util.printMatrix(m.get());
                 System.out.println();
                 m.triangulate();
-                System.out.println("Слау: ");
+                System.out.println("Решение слау: ");
                 System.out.println(Arrays.asList(m.getAnswersSLAU()));
 
                 sleGUI.resetStyles();
@@ -92,6 +92,7 @@ public class SLEGUI extends Application{
                 Double det = square.det();
                 sleGUI.notice(new vt.smt.GUI.Observer.PopUpText
                         ("det основной матрицы:\n" + Double.toString(det)));
+                System.out.println("Неувязки:");
                 System.out.println(Arrays.asList(m.getDiscrepancy(m.getAnswersSLAU())));
                 Platform.runLater(()->{
                     answerWindow.setDet(det);
