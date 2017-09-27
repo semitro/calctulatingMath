@@ -10,33 +10,46 @@ import javafx.stage.Stage;
 import vt.smt.DynamicLoad.CodeToFunctionTranslater;
 import vt.smt.DynamicLoad.DynamicFunctionManager;
 
+/**
+ * The main entry point
+**/
 public class MainGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Scene scene = new Scene(mainPane);
+        this.primaryStage  = primaryStage;
+        scene = new Scene(mainPane);
+        scene.getStylesheets().add("/css/theme.css");
         primaryStage.setScene(scene);
         mainPane.setCenter(plot);
         mainPane.setBottom(formulaInput);
         primaryStage.show();
-    }
 
+    }
+    // Главная сцена с графиком
+    private Scene scene;
+    // Сцена ожидания компиляции (жди меня)
+    private WaitMeScene waitingScene = new WaitMeScene();
+    private Stage primaryStage;
     @Override
     public void init() throws Exception {
         super.init();
         functionManager = new DynamicFunctionManager();
         functionManager.setCode(formulaInput.getText());
         formulaInput.setOnAction(e->{
-                new Thread(()->{
+            primaryStage.setScene(waitingScene.getScene());
+            primaryStage.show();
+            new Thread(()->{
                     Platform.runLater(()->{
                         functionManager.setCode(formulaInput.getText());
                         try {
                             plot.clear();
-                            plot.setFunction(functionManager.getFunction(),0.0,100.0);
+                            plot.setFunction(functionManager.getFunction(),-100.0,100.0);
                         }catch (ReflectiveOperationException exception){
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setContentText(exception.getMessage());
                             alert.show();
                         }
+                        primaryStage.setScene(scene);
                     });
                     }).start();
             });
