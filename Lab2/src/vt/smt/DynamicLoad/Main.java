@@ -5,7 +5,10 @@ package vt.smt.DynamicLoad;
  */
 public class Main {
     public static void main(String[] argv) throws Exception{
+        DynamicFunctionChanger changer = new DynamicFunctionChanger();
+        changer.setCode("sin(x)");
         FunctionLoader loader = new FunctionLoader();
-        System.out.println(loader.getFunction().apply(24.0));
+        System.out.println(loader.getFunction().apply(3.1415));
+
     }
 }
