@@ -2,12 +2,12 @@ package vt.smt.DynamicLoad;
 
 import java.io.File;
 import java.io.RandomAccessFile;
+
 /**
  *  Класс для изменения кода функции в файле, подготовленном для компиляции
  */
-public class DynamicFunctionChanger {
+class DynamicFunctionChanger {
     public DynamicFunctionChanger(){
-
     }
 
     /**

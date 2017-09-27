@@ -23,26 +23,27 @@ import java.util.function.Function;
  * @since v1.0
  */
 
-public class FunctionLoader {
+class FunctionLoader {
     // Искомая математическая функция одной переменной
-    public Function<Double,Double> getFunction(){
+    public Function<Number,Number> getFunction(){
         return function;
     }
-    public FunctionLoader()throws IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException{
+    public FunctionLoader()
+            throws IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException{
         reloadFunction();
     }
     // Сама функция
-    private Function<Double,Double> function;
+    private Function<Number,Number> function;
     // Класс, подгруженный из файла
     private Class loadedClass = null;
     // Когда файл меняется, возникает необходимость перекомпилировать функцию
     public void reloadFunction() throws IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException{
         loadedClass = compileAndLoadTheClass();
-        function = new Function<Double,Double>(){
+        function = new Function<Number,Number>(){
             @Override
-            public Double apply(Double aDouble) {
+            public Number apply(Number arg) {
                 try {
-                   return (Double)loadedClass.getMethods()[0].invoke(loadedClass, aDouble);
+                   return (Number)loadedClass.getMethods()[0].invoke(loadedClass, arg);
                 }catch (Exception e){
                     System.out.println("reloadFunction()::createNewFunction");
                     System.out.println("loadedClass.getMethods()[0].invoke(loadedClass, 10)");
@@ -58,7 +59,7 @@ public class FunctionLoader {
         try {
             // Возможно, это тупо,
             // но нужно дождаться, пока системный вызов запишет результаты компиляции на диск
-            Thread.currentThread().sleep(5000);
+            Thread.currentThread().sleep(4000);
         }catch (InterruptedException e){
             e.printStackTrace();
         }

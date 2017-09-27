@@ -31,6 +31,9 @@ public class Plot extends HBox {
     public void setTitle(String title){
         lineChart.setTitle(title);
     }
+    public void clear(){
+        lineChart.getData().clear();
+    }
     private NumberAxis xAxis = new NumberAxis();
     private NumberAxis yAxis = new NumberAxis();
     private LineChart lineChart;
