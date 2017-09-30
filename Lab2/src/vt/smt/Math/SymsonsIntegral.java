@@ -3,12 +3,13 @@ package vt.smt.Math;
 import java.util.function.Function;
 
 /**
- * Created by semitro on 01.10.17.
+ * Integration using Symson's method
+ * The main idea - approximate the square by parabolas
  */
 public class SymsonsIntegral extends Integral{
     @Override
     protected Double getAtomSquare(Function<Double, Double> function, Double x1, Double x2) {
-
-        return null;
+        // Just the formula. Square under an approximate parabola
+        return (x2-x1)/6.0 * (function.apply(x1) + 4.0*function.apply((x1+x2 )/ 2.0) + function.apply(x2));
     }
 }

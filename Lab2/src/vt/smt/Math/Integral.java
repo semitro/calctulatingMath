@@ -26,16 +26,16 @@ public abstract class Integral implements Integrator {
         return currentSquare;
     }
     // Integrate the function clearly setting the numbers of the separations
-    protected Double integrateSeparation(Function<Double, Double> function, Double from, Double to, Integer steps){
-        Double square = 0.0; // The undef integral
-        Double xLeft = from; // f(x + delta x)
-        // Size of one line on the x axis
-        Double deltaX = to - from / steps.doubleValue(); // f(x + delta x)
-
-        for (int i =0; i<steps;i++) {
+    public Double integrateSeparation(Function<Double, Double> function, Double from, Double to, Integer steps){
+        Double square = 0.0; // The undef integral is a square under the plot
+        Double xLeft = from; // Current point to get function value
+        Double deltaX = to - from / steps.doubleValue(); // The offset to get the second point
+        for (int i = 0; i < steps; i++ ) {
+            // The current simple piece's square is getting from an any integration method
             square += getAtomSquare(function, xLeft, xLeft + deltaX);
             xLeft += deltaX;
         }
+        return square;
     }
     protected abstract Double getAtomSquare(Function<Double,Double> function, Double x1, Double x2);
     // Оценка погрешности правилом Рунге
