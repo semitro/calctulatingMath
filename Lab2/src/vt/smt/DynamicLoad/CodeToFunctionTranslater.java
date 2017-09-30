@@ -5,5 +5,5 @@ import java.util.function.Function;
 
 public interface CodeToFunctionTranslater {
     void setCode(String code);
-    Function<Number,Number> getFunction() throws ReflectiveOperationException;
+    Function<? extends Number,? extends Number> getFunction() throws ReflectiveOperationException;
 }
