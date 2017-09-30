@@ -17,6 +17,7 @@ public class MainGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage  = primaryStage;
+        primaryStage.setTitle("Определённый интеграл оффлайн");
         scene = new Scene(mainPane);
         scene.getStylesheets().add("/css/theme.css");
         primaryStage.setScene(scene);
