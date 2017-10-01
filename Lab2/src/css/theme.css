@@ -6,6 +6,9 @@
     -fx-border-width: 1px;
     -fx-border-radius: 4px;
 }
+#bottomMenu{
+    -fx-translate-y: -10px;
+}
 #borderLabel{
     -fx-pref-width: 45px;
     -fx-pref-height: 5px;
@@ -23,6 +26,27 @@
     -fx-font-size: 24px;
     -fx-font-style: italic;
 }
+#precisionLabel{
+    -fx-font-family: ubuntu;
+    -fx-font-style: italic;
+    -fx-font-size: 12px;
+}
+
+#precisionBox{
+    -fx-translate-y: 32px;
+    -fx-font-size: 12px;
+    -fx-translate-x: 235px;
+    -fx-pref-height: 5px;
+    -fx-padding: 5px;
+}
+
+#precisionInput{
+    -fx-translate-x: 5px;
+    -fx-pref-height: 3px;
+    -fx-translate-y: -6px;
+    -fx-pref-width:  100px;
+}
+
 #integralLabel{
     -fx-font-size: 35px;
     -fx-translate-x: 17px;

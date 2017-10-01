@@ -50,10 +50,18 @@ public class MainGUI extends Application {
                             plot.setFunction((Function<Number,Number>)functionManager.getFunction(),
                                     Double.parseDouble(integralInput.getFrom()),Double.parseDouble(integralInput.getTo()));
                             Integral integral = new SymsonsIntegral();
-                            System.out.println(integral.integrate(
+
+                            plot.setTitleUnderPlot(
+                                    "∫f(x)dx = " +
+                                    Double.toString(
+                                    integral.integrate(
                                     (Function<Double, Double>) functionManager.getFunction(),
                                     Double.parseDouble(integralInput.getFrom()),
-                                    Double.parseDouble(integralInput.getTo()), 0.025));
+                                    Double.parseDouble(integralInput.getTo()),
+                                    Double.parseDouble(integralInput.getPrecision()))
+                                    )
+                            );
+                            plot.setClueOnMouseEnterPlot("Количество разбиений: " + integral.getLastIntegrateSteps().toString());
                         }catch (ReflectiveOperationException exception){
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setContentText(exception.getMessage());
