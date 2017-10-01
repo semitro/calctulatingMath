@@ -23,6 +23,7 @@ public abstract class Integral implements Integrator {
             steps *= 2;
             currentSquare = integrateSeparation(function, from, to, steps);
         }
+        this.lastIntegrateInfelicity = infelicityRunge(previousSquare,currentSquare);
         this.lastIntegrateSteps = steps;
         return currentSquare;
     }
@@ -46,6 +47,9 @@ public abstract class Integral implements Integrator {
     protected Double rungeRuleCoeff = 15.0;
     // Сколько разбиений было совершено при последнем интегрировании?
     protected Integer lastIntegrateSteps;
+    // Погрешность последнего измерения
+    protected Double  lastIntegrateInfelicity;
+    public Double getLastIntegrateInfelicity(){return lastIntegrateInfelicity;}
     public Integer getLastIntegrateSteps(){return lastIntegrateSteps;}
 
 }

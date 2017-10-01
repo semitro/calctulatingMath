@@ -61,7 +61,8 @@ public class MainGUI extends Application {
                                     Double.parseDouble(integralInput.getPrecision()))
                                     )
                             );
-                            plot.setClueOnMouseEnterPlot("Количество разбиений: " + integral.getLastIntegrateSteps().toString());
+                            plot.setClueOnMouseEnterPlot("Количество разбиений: " + integral.getLastIntegrateSteps().toString()
+                             + "\nПогрешность: " + integral.getLastIntegrateInfelicity());
                         }catch (ReflectiveOperationException exception){
                             Alert alert = new Alert(Alert.AlertType.ERROR);
                             alert.setContentText(exception.getMessage());
