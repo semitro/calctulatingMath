@@ -1,5 +1,9 @@
 package vt.smt.Math;
 
+import javafx.util.Pair;
+
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -9,6 +13,8 @@ public abstract class Integral implements Integrator {
 
     @Override
     public Double integrate(Function<Double, Double> function, Double from, Double to, Double precision) {
+        // Erase information about a previous primitive
+        this.primitiveValues.clear();
         // The number of the separations
         Integer steps = 1;
         // We need to do this to use the Runge's rule
@@ -35,6 +41,8 @@ public abstract class Integral implements Integrator {
         for (int i = 0; i < steps; i++ ) {
             // The current simple piece's square is getting from an any integration method
             square += getAtomSquare(function, xLeft, xLeft + deltaX);
+            // The primitive is the square on the every single step
+            primitiveValues.add(new Pair<>(xLeft+deltaX, square));
             xLeft += deltaX;
         }
         return square;
@@ -51,5 +59,9 @@ public abstract class Integral implements Integrator {
     protected Double  lastIntegrateInfelicity;
     public Double getLastIntegrateInfelicity(){return lastIntegrateInfelicity;}
     public Integer getLastIntegrateSteps(){return lastIntegrateSteps;}
-
+    // Таблица значений первообрзаной
+    protected List<Pair<Double,Double>> primitiveValues = new LinkedList<>();
+    public List<Pair<Double, Double>> getPrimitiveValues() {
+        return primitiveValues;
+    }
 }

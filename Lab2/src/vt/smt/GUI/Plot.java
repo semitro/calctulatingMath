@@ -8,6 +8,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
+import javafx.util.Pair;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class Plot extends HBox {
     public void setFunction(Function<Number,Number> function, Double from, Double to){
         List<XYChart.Data> d1 = new LinkedList<>();
         // 72 точки
-        for(Double i = Math.min(from,to); i<to; i+= Math.abs(to-from)/72.0)
+        for(Double i = Math.min(from,to); i<Math.max(to,from); i+= Math.abs(to-from)/72.0)
             d1.add(new XYChart.Data<Double,Double>(new Double(i), (Double)function.apply(i)));
         ObservableList<XYChart.Data> data = FXCollections.observableList(d1);
         integrateSeries = new XYChart.Series(data);
@@ -37,6 +38,12 @@ public class Plot extends HBox {
         lineChart.getData().add(integrateSeries);
         integrateSeries.getNode().setId("chartAreaWithoutFill");
 
+    }
+    public void addFunction(List<Pair<Double,Double>> table){
+        List<XYChart.Data> d1 = new LinkedList<>();
+        table.forEach(e->d1.add( new XYChart.Data<>(e.getKey(),e.getValue())));
+        ObservableList<XYChart.Data> data = FXCollections.observableList(d1);
+        lineChart.getData().add(new XYChart.Series(data));
     }
     public void setTitle(String title){
         lineChart.setTitle(title);

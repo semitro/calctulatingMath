@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import vt.smt.DynamicLoad.CodeToFunctionTranslater;
@@ -26,6 +27,8 @@ public class MainGUI extends Application {
         primaryStage.setScene(scene);
         mainPane.setCenter(plot);
         mainPane.setBottom(integralInput);
+        primaryStage.getIcons().clear();
+        primaryStage.getIcons().add( new Image(getClass().getResourceAsStream("/img/icon.png")));
         primaryStage.show();
 
     }
@@ -72,6 +75,7 @@ public class MainGUI extends Application {
                     });
                     }).start();
             });
+
     }
     private Plot plot = new Plot();
     // То, что превращает введённый код в исполняемыйы
