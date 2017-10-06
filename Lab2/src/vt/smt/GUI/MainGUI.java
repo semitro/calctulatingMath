@@ -49,9 +49,12 @@ public class MainGUI extends Application {
                     Platform.runLater(()->{
                         functionManager.setCode(integralInput.getFunction());
                         try {
-                            plot.clear();
-                            plot.setFunction((Function<Number,Number>)functionManager.getFunction(),
-                                    Double.parseDouble(integralInput.getFrom()),Double.parseDouble(integralInput.getTo()));
+                            if(!previous_function.equals(integralInput.getFunction())) {
+                                plot.clear();
+                                plot.setFunction((Function<Number, Number>) functionManager.getFunction(),
+                                        Double.parseDouble(integralInput.getFrom()), Double.parseDouble(integralInput.getTo()));
+                                previous_function = integralInput.getFunction();
+                            }
                             Integral integral = new SymsonsIntegral();
 
                             plot.setTitleUnderPlot(
@@ -77,6 +80,8 @@ public class MainGUI extends Application {
             });
 
     }
+    // we don't wont to recompile the same code
+    private String previous_function = new String();
     private Plot plot = new Plot();
     // То, что превращает введённый код в исполняемыйы
     private CodeToFunctionTranslater functionManager;
