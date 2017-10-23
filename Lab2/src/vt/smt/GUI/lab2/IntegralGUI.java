@@ -50,7 +50,7 @@ public class IntegralGUI extends BorderPane{
                             plot.clear();
 
                             plot.setFunction((Function<Number, Number>) functionManager.getFunction(),
-                                    Double.parseDouble(integralInput.getFrom()), Double.parseDouble(integralInput.getTo()));
+                                    Double.parseDouble(integralInput.getFrom()), Double.parseDouble(integralInput.getTo()),null);
                             previous_function = integralInput.getFunction();
                         }
                         Integral integral = new SymsonsIntegral();

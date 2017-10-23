@@ -21,7 +21,6 @@ public class Approximation {
                 dif[i][j] = (dif[i+1][j-1] - dif[i][j-1])/
                             ( -table.get(i).getKey() + table.get(i+j).getKey());
             }
-        vt.smt.Math.Util.printMatrix(dif);
         return new Function<Number, Number>() {
             @Override
             public Number apply(Number x) {
