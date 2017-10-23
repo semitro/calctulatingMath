@@ -29,8 +29,8 @@ public class Plot extends HBox {
     private XYChart.Series integrateSeries;
     public void setFunction(Function<Number,Number> function, Double from, Double to){
         List<XYChart.Data> d1 = new LinkedList<>();
-        // 72 точки
-        for(Double i = Math.min(from,to); i<Math.max(to,from); i+= Math.abs(to-from)/72.0)
+        // 100 точек
+        for(Double i = Math.min(from,to); i<Math.max(to,from); i+= Math.abs(to-from)/100.0)
             d1.add(new XYChart.Data<Double,Double>(new Double(i), (Double)function.apply(i)));
         ObservableList<XYChart.Data> data = FXCollections.observableList(d1);
         integrateSeries = new XYChart.Series(data);

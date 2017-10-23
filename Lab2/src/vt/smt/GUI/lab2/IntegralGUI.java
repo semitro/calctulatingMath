@@ -49,7 +49,6 @@ public class IntegralGUI extends BorderPane{
                         if(!previous_function.equals(integralInput.getFunction())) {
                             plot.clear();
 
-
                             plot.setFunction((Function<Number, Number>) functionManager.getFunction(),
                                     Double.parseDouble(integralInput.getFrom()), Double.parseDouble(integralInput.getTo()));
                             previous_function = integralInput.getFunction();

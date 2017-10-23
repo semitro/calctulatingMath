@@ -22,7 +22,6 @@ public class IntegralInputGUI extends HBox {
         fromInput = new TextField("0");
         toInput = new TextField("10");
 
-
         fromInput.setId("borderLabel");
         toInput.setId("borderLabel");
         integralLabel.setId("integralLabel");
