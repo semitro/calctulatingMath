@@ -2,7 +2,6 @@ package vt.smt.GUI.lab1;
 
 import javafx.application.Platform;
 import javafx.geometry.Orientation;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
@@ -19,20 +18,17 @@ import java.util.Arrays;
 /**
  * Created by semitro on 23.09.17.
  */
-public class SLEGUI extends Scene{
+public class SLEGUI extends BorderPane {
 
 
     public SLEGUI(Stage primaryStage) throws Exception {
-        super(new BorderPane());
        // Scene scene = new Scene(mainPane,820,272);
-        this.setRoot(mainPane);
         init();
         primaryStage.setTitle("Решение слау методом Гаусса оффлайн");
-        this.getStylesheets().add("/css/theme.css");
         HBox spaceSLEGUI = new HBox(40);
         spaceSLEGUI.getChildren().add(sleGUI);
         spaceSLEGUI.setTranslateX(40);
-        mainPane.setCenter(spaceSLEGUI);
+        this.setCenter(spaceSLEGUI);
         primaryStage.setOnCloseRequest(e->System.exit(0));
         matrixSize.valueProperty().addListener( (e,oldValue,newValue)->{
             if(newValue.intValue() != oldValue.intValue())
@@ -41,10 +37,10 @@ public class SLEGUI extends Scene{
         animationSpeedSlider.valueProperty().addListener((e,oldValue,newValue)->{
             m.setDelayAfterotice(newValue.intValue());
         } );
-        mainPane.setTop(matrixSize);
+        this.setTop(matrixSize);
         bottomBox.getChildren().addAll(fileButton,solveSLE,fillRandomButton);
-        mainPane.setBottom(bottomBox);
-        mainPane.setRight(animationSpeedSlider);
+        this.setBottom(bottomBox);
+        this.setRight(animationSpeedSlider);
         sleGUI.setStageToKeepPopUp(primaryStage);
         solveSLE.setOnMouseClicked(e->onSolveSLEClicked());
 
@@ -67,9 +63,6 @@ public class SLEGUI extends Scene{
             m = vt.smt.Math.Util.getRandomMatrix();
             sleGUI.setMatrix(m);
         });
-        primaryStage.setScene(this);
-        primaryStage.show();
-
     }
     private Matrix m;
     private void onSolveSLEClicked(){
@@ -122,7 +115,7 @@ public class SLEGUI extends Scene{
     }
 
     private SLEInput sleGUI = new SLEInput(4,3);
-    private BorderPane mainPane = new BorderPane();
+   // private BorderPane mainPane = new BorderPane();
     private Slider matrixSize = new Slider();
     private Button fillRandomButton = new Button("Тебе повезёт");
     private Button solveSLE = new Button("Решить СЛАУ");

@@ -1,7 +1,6 @@
 package vt.smt.GUI.lab2;
 
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
@@ -21,9 +20,7 @@ public class IntegralGUI extends BorderPane{
     public IntegralGUI(Stage stage) throws Exception{
         super();
         this.primaryStage  = stage;
-        this.normalScene = primaryStage.getScene();
         primaryStage.setTitle("Определённый интеграл оффлайн");
-        this.getStylesheets().add("/css/theme.css");
         this.setCenter(plot);
         this.setBottom(integralInput);
         primaryStage.getIcons().clear();
@@ -33,7 +30,6 @@ public class IntegralGUI extends BorderPane{
     }
     // Сцена ожидания компиляции (жди меня)
     private WaitMeScene waitingScene = new WaitMeScene();
-    private Scene normalScene;
     private Stage primaryStage;
 
     public void init() throws Exception{
@@ -44,8 +40,10 @@ public class IntegralGUI extends BorderPane{
         integralInput.setOnEnterAction(e->{
             this.setCenter(waitingScene.getPane());
             this.setBottom(null);
+            System.out.println("Вывы");
             new Thread(()->{
                 Platform.runLater(()->{
+
                     functionManager.setCode(integralInput.getFunction());
                     try {
                         if(!previous_function.equals(integralInput.getFunction())) {
@@ -57,7 +55,6 @@ public class IntegralGUI extends BorderPane{
                             previous_function = integralInput.getFunction();
                         }
                         Integral integral = new SymsonsIntegral();
-
 
                         plot.setTitleUnderPlot(
                                 "∫f(x)dx = " +

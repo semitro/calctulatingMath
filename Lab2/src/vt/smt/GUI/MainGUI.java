@@ -10,6 +10,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import vt.smt.GUI.lab2.IntegralGUI;
+import vt.smt.GUI.lab1.SLEGUI;
+
 /**
  * The main entry point
 **/
@@ -21,8 +23,9 @@ public class MainGUI extends Application {
 
         BorderPane b = new BorderPane();
         Scene sc = new Scene(b);
-
+        sc.getStylesheets().add("/css/theme.css");
         integralGUI = new IntegralGUI(primaryStage);
+        sleGUI      = new SLEGUI(primaryStage);
       //  b.setCenter(((IntegralGUI)integralGUI).getMainNode());
 
         //  sleGUI      = new SLEGUI     (primaryStage);
@@ -38,6 +41,7 @@ public class MainGUI extends Application {
 
         final MenuItem menuMatrix = new MenuItem("Решать слау");
         menuMatrix.setOnAction(e->b.setCenter(sleGUI));
+
         final Menu menu = new Menu("Что делать?");
         menu.getItems().addAll(menuInt,menuMatrix);
 
