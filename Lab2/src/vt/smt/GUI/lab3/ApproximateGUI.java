@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 import vt.smt.DynamicLoad.DynamicFunctionManager;
 import vt.smt.GUI.lab2.Plot;
+import vt.smt.Math.Approximation.Approximation;
 
 import java.util.LinkedList;
 import java.util.function.Function;
@@ -47,14 +48,22 @@ public class ApproximateGUI extends BorderPane {
 
                 functionManager.setCode(functionField.getText());
                 try {
-                    Function<Number,Number> f = functionManager.getFunction();
-                    plot.setFunction(f,0.01,100.0);
+                    Function<Number,Number> f1 = functionManager.getFunction();
+                    plot.setFunction(f1,0.01,100.0);
                     LinkedList<Pair<Double,Double>> l = new LinkedList<>();
                     l.add(new Pair<>(0.,-2.));
                     l.add(new Pair<>(1.,-5.));
                     l.add(new Pair<>(2., 0.));
                     l.add(new Pair<>(3.,-4.));
-                    vt.smt.Math.Approximation.Approximation.getApproximateFunction(l);
+                    Function<Number,Number>  f = Approximation.getApproximateFunction(l);
+                    System.out.println(f.apply(2.99));
+                    System.out.println(f.apply(0.0));
+                    System.out.println(f.apply(1.5));
+                    System.out.println(f.apply(1.0));
+                    System.out.println(f.apply(2.0));
+                    System.out.println(f.apply(3.0));
+
+
                 } catch (ReflectiveOperationException e1) {
                     e1.printStackTrace();
                 }

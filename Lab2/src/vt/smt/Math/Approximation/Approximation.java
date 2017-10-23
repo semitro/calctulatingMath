@@ -22,6 +22,22 @@ public class Approximation {
                             ( -table.get(i).getKey() + table.get(i+j).getKey());
             }
         vt.smt.Math.Util.printMatrix(dif);
-        return null;
+        return new Function<Number, Number>() {
+            @Override
+            public Number apply(Number x) {
+                // Многочлен Ньютона
+                Double ans = 0.;
+                Double currentTerm;
+                for(int i = 0; i < n;i++) {
+                    currentTerm = dif[0][i];
+                    for (int brackets = 0; brackets < i; brackets++) {
+                        currentTerm *= (Double)x - table.get(brackets).getKey();
+                    }
+                    ans += currentTerm;
+                }
+
+                return ans;
+            }
+        };
     }
 }
