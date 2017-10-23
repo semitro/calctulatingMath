@@ -34,6 +34,6 @@
 	Ощепков Артём, vk.com/oshepkovtemka
 
 Исходный код:
-	
+https://github.com/semitro/calculatingMath/tree/master/Lab2	
 
-2017
+SPB-2017
