@@ -32,8 +32,11 @@ public class Plot extends HBox {
 
     public void setFunction(Function<Number,Number> function, Double from, Double to, @Nullable String name){
         List<XYChart.Data> d1 = new LinkedList<>();
-        // 128 точек
-        for(Double i = Math.min(from,to); i < Math.max(to,from); i+= Math.abs(to-from)/128.0) {
+        // Защита от бесконечного цикла
+        if(Math.abs(to-from)/256.0  == 0.)
+            return;
+        // 256 точек
+        for(Double i = Math.min(from,to); i < Math.max(to,from); i+= Math.abs(to-from)/256.0) {
             d1.add(new XYChart.Data<Double, Double>(new Double(i), (Double) function.apply(i)));
             // Быстрый костыль для ресайзинга отрезков
             if (maxF < Math.abs((Double) function.apply(i)));

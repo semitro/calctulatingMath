@@ -54,7 +54,16 @@ public class ApproximateGUI extends BorderPane {
     }
     private DynamicFunctionManager functionManager;
     private void initActions(){
+        leftInterval.setOnKeyPressed(e->{
+            if(e.getCode().equals(KeyCode.ENTER))
+                rightInterval.requestFocus();
+        });
         functionField.setOnKeyPressed(e->{
+            if(e.getCode().equals(KeyCode.ENTER))
+                leftInterval.requestFocus();
+        });
+
+        rightInterval.setOnKeyPressed(e->{
             if(e.getCode().equals(KeyCode.ENTER)){
                 functionManager.setCode(functionField.getText());
                 try {
@@ -62,14 +71,15 @@ public class ApproximateGUI extends BorderPane {
                     Function<Number,Number> userFunction = functionManager.getFunction();
 
                     Double from, to;
-                    from = Double.parseDouble(leftInterval.getText());
-                    to = Double.parseDouble(rightInterval.getText());
+                    from = Math.min(Double.parseDouble(leftInterval.getText()),
+                                    Double.parseDouble(rightInterval.getText()));
+                    to  =  Math.max(Double.parseDouble(leftInterval.getText()),
+                                    Double.parseDouble(rightInterval.getText()));
 
 
                     LinkedList<Pair<Double,Double>> l = new LinkedList<>();
                     for(double i = from; i <= to; i += Math.abs(from-to)/((int)dotsSlider.getValue()-1)){
                         l.add(new Pair(new Double(i),userFunction.apply(i)));
-                        System.out.println(i);
                     }
 
                     plot.clear();

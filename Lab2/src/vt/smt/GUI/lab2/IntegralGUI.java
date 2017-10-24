@@ -25,7 +25,6 @@ public class IntegralGUI extends BorderPane{
         this.setBottom(integralInput);
         primaryStage.getIcons().clear();
         primaryStage.getIcons().add( new Image(getClass().getResourceAsStream("/img/icon.png")));
-        primaryStage.show();
         init();
     }
     // Сцена ожидания компиляции (жди меня)
@@ -40,7 +39,7 @@ public class IntegralGUI extends BorderPane{
         integralInput.setOnEnterAction(e->{
             this.setCenter(waitingScene.getPane());
             this.setBottom(null);
-            System.out.println("Вывы");
+
             new Thread(()->{
                 Platform.runLater(()->{
 

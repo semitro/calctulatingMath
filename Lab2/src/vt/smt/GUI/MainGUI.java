@@ -10,6 +10,8 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import vt.smt.GUI.lab3.ApproximateGUI;
+import vt.smt.GUI.lab2.IntegralGUI;
+import vt.smt.GUI.lab1.SLEGUI;
 
 /**
  * The main entry point
@@ -18,20 +20,15 @@ public class MainGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage  = primaryStage;
-        primaryStage.setTitle("Определённый интеграл оффлайн");
 
         BorderPane b = new BorderPane();
         Scene sc = new Scene(b);
         sc.getStylesheets().add("/css/theme.css");
-//        integralGUI = new IntegralGUI(primaryStage);
-//        sleGUI      = new SLEGUI(primaryStage);
+        integralGUI = new IntegralGUI(primaryStage);
+        sleGUI      = new SLEGUI(primaryStage);
         approximateGUI = new ApproximateGUI();
-      //  b.setCenter(((IntegralGUI)integralGUI).getMainNode());
 
-        //  sleGUI      = new SLEGUI     (primaryStage);
 
-//        integralGUI.setRoot((Parent)b.getCenter());
-//        sleGUI     .setRoot((Parent)b.getCenter());
         primaryStage.setScene(sc);
 
 
@@ -54,6 +51,8 @@ public class MainGUI extends Application {
         b.setTop(menuBar);
         b.setCenter(approximateGUI);
         primaryStage.getIcons().add( new Image(getClass().getResourceAsStream("/img/icon.png")));
+
+        primaryStage.setTitle("Вычмат без смс");
         primaryStage.show();
 
     }
