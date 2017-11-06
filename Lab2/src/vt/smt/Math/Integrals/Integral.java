@@ -12,7 +12,7 @@ import java.util.function.Function;
 public abstract class Integral implements Integrator {
 
     @Override
-    public Double integrate(Function<Double, Double> function, Double from, Double to, Double precision) {
+    public Double integrate(Function<? super Number,? extends Number> function, Double from, Double to, Double precision) {
         // Erase information about a previous primitive
         this.primitiveValues.clear();
         // The number of the separations
@@ -34,7 +34,7 @@ public abstract class Integral implements Integrator {
         return currentSquare;
     }
     // Integrate the function clearly setting the numbers of the separations
-    public Double integrateSeparation(Function<Double, Double> function, Double from, Double to, Integer steps){
+    public Double integrateSeparation(Function<? super Number, ? extends Number> function, Double from, Double to, Integer steps){
         Double square = 0.0; // The undef integral is a square under the plot
         Double xLeft = from; // Current point to get function value
         Double deltaX = (to - from )/ steps.doubleValue(); // The offset to get the second point
@@ -47,7 +47,7 @@ public abstract class Integral implements Integrator {
         }
         return square;
     }
-    protected abstract Double getAtomSquare(Function<Double,Double> function, Double x1, Double x2);
+    protected abstract Double getAtomSquare(Function<? super  Number,? extends Number> function, Double x1, Double x2);
     // Оценка погрешности правилом Рунге
     protected Double infelicityRunge(Double I1,Double I2){
         return Math.abs(I1 - I2)/rungeRuleCoeff;

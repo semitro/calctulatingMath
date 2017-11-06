@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -34,6 +35,7 @@ class FunctionLoader {
     }
     // Сама функция
     private Function<Number,Number> function;
+    private BiFunction<Number, Number, Number> biFunction;
     // Класс, подгруженный из файла
     private Class loadedClass = null;
     // Когда файл меняется, возникает необходимость перекомпилировать функцию
@@ -43,7 +45,11 @@ class FunctionLoader {
             @Override
             public Number apply(Number arg) {
                 try {
-                   return (Number)loadedClass.getMethods()[0].invoke(loadedClass, arg);
+                    if(loadedClass.getMethods()[0].getName().equals("f"))
+                        return (Number)loadedClass.getMethods()[0].invoke(loadedClass, arg);
+                         else
+                        return (Number)loadedClass.getMethods()[1].invoke(loadedClass, arg);
+
                 }catch (Exception e){
                     System.out.println("reloadFunction()::createNewFunction");
                     System.out.println("loadedClass.getMethods()[0].invoke(loadedClass, 10)");
@@ -52,6 +58,23 @@ class FunctionLoader {
                 return -0.0;
             }
         };
+        biFunction = (x,y)->{
+            try {
+                if(loadedClass.getMethods()[0].getName().equals("f_2"))
+                    return (Number)loadedClass.getMethods()[0].invoke(loadedClass, x, y);
+                else
+                    return (Number)loadedClass.getMethods()[1].invoke(loadedClass, x, y);
+            }catch (Exception e){
+                System.out.println("reloadFunction()::createNewFunction(bi)");
+                System.out.println("loadedClass.getMethods()[0].invoke(loadedClass,x,y)");
+                e.printStackTrace();
+            }
+            return -0.0;
+        };
+    }
+
+    public BiFunction<Number, Number, Number> getBiFunction() {
+        return biFunction;
     }
 
     private Class compileAndLoadTheClass() throws IOException, ClassNotFoundException{

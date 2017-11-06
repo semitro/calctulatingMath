@@ -3,6 +3,7 @@ package vt.smt.DynamicLoad;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /***
@@ -23,6 +24,12 @@ public class DynamicFunctionManager implements CodeToFunctionTranslater{
     public void setCode(String code){
         functionChanger.setCode(code);
     }
+
+    @Override
+    public void setCode(String code, int arg_count) {
+        functionChanger.setCode(code,arg_count);
+    }
+
     @Override
     public Function<Number,Number> getFunction()  throws ReflectiveOperationException{
         try{
@@ -35,6 +42,18 @@ public class DynamicFunctionManager implements CodeToFunctionTranslater{
                     "vk.com/oshepkovtemka");
         }
     }
+
+    @Override
+    public BiFunction<Number, Number, Number> getBiFunction() {
+        try{
+            functionLoader.reloadFunction();
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Это случилось при загрузке BiFunction");
+        }
+        return functionLoader.getBiFunction();
+    }
+
     private FunctionLoader functionLoader;
     private DynamicFunctionChanger functionChanger;
 }

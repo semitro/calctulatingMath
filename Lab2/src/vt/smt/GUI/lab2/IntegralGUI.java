@@ -58,7 +58,7 @@ public class IntegralGUI extends BorderPane{
                                 "∫f(x)dx = " +
                                         Double.toString(
                                                 integral.integrate(
-                                                        (Function<Double, Double>) functionManager.getFunction(),
+                                                         functionManager.getFunction(),
                                                         Double.parseDouble(integralInput.getFrom()),
                                                         Double.parseDouble(integralInput.getTo()),
                                                         Double.parseDouble(integralInput.getPrecision()))

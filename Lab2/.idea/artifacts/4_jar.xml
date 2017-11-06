@@ -6,7 +6,6 @@
         <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
       </element>
       <element id="dir-copy" path="$PROJECT_DIR$/out/production/Lab2" />
-      <element id="dir-copy" path="$PROJECT_DIR$/out/production/Lab2/vt" />
       <element id="module-output" name="untitled" />
     </root>
   </artifact>
