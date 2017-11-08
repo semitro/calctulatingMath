@@ -24,7 +24,7 @@ public class DifferentialEqGUI extends BorderPane{
 
     private Label intervalLabel = new Label("f(");
     private TextField argumentCauchy = new TextField("0");
-    private TextField valueCauchy = new TextField("2");
+    private TextField valueCauchy = new TextField("1");
     private Label intervalLabelEnd = new Label(") = ");
 
     private HBox functionInputBox;
@@ -36,7 +36,7 @@ public class DifferentialEqGUI extends BorderPane{
     private final TextField precision = new TextField("0.25");
 
     private final Label right_label = new Label("До: ");
-    private final TextField rightBorder = new TextField("10");
+    private final TextField rightBorder = new TextField("4");
 
     public DifferentialEqGUI(){
         super();
@@ -77,13 +77,22 @@ public class DifferentialEqGUI extends BorderPane{
             if(e.getCode().equals(KeyCode.ENTER))
                 argumentCauchy.requestFocus();
         });
-
         valueCauchy.setOnKeyPressed(e->{
+            if(e.getCode().equals(KeyCode.ENTER))
+                precision.requestFocus();
+        });
+        precision.setOnKeyPressed(e->{
+            if(e.getCode().equals(KeyCode.ENTER))
+                rightBorder.requestFocus();
+            }
+        );
+        rightBorder.setOnKeyPressed(e->{
             if(e.getCode().equals(KeyCode.ENTER)){
-                    double x_0, y_0, to;
+                    double x_0, y_0, to, prec;
                     try {
                          x_0 = Double.parseDouble(argumentCauchy.getText());
                          y_0 = Double.parseDouble(valueCauchy.getText());
+                         prec = Double.parseDouble(precision.getText());
                          to  = Double.parseDouble(rightBorder.getText());
                          if(to <= x_0){
                              Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -95,7 +104,7 @@ public class DifferentialEqGUI extends BorderPane{
 
                              BiFunction<Number,Number,Number> f_x_y = functionManager.getBiFunction();
                              plot.clear();
-                             plot.setFunction(eq_solver.getAns(f_x_y, x_0, y_0, to, 10.)
+                             plot.setFunction(eq_solver.getAns(f_x_y, x_0, y_0, to, prec)
                                      , x_0, to, "Интегральная кривая");
                          }
                     }catch (NumberFormatException numeirc){

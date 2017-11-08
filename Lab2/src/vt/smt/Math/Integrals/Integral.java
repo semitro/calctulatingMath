@@ -44,6 +44,8 @@ public abstract class Integral implements Integrator {
             // The primitive is the square on the every single step
             primitiveValues.add(new Pair<>(xLeft+deltaX, square));
             xLeft += deltaX;
+            if(i > 64000)
+                return square;
         }
         return square;
     }

@@ -21,26 +21,36 @@ public class FirstOrderEqSolverImpl implements FirstOrderEqSolver {
     public Function<Number, Number> getAns(BiFunction<Number, Number, Number> f_x_y, double x0, double y0,
                                            double to, double precision) {
         //h = (to - x0) / 4.0; // Пусть сначала - 4 шага
-        Function<Number, Number> ans;
-
-        List<Pair<Double,Double>> predictor = (LinkedList)RoungeCo2(f_x_y,x0,y0,Math.abs(to-x0)/8.,to);
-        double nextValue;
-        //corrector:
-        for(int i = 3; i < predictor.size();i++){
-            System.out.println(i);
+        Function<Number, Number> ans = null;
+        boolean repeat_flag = true;
+        double h = 2.;
+        while (repeat_flag) {
+            h *= 2.;
+            List<Pair<Double, Double>> predictor = (LinkedList) RoungeCo2(f_x_y, x0, y0, Math.abs(to - x0) / h, to);
+            double nextValue;
+            //corrector:
+            for (int i = 3; i < predictor.size(); i++) {
+                System.out.println(i);
 //            nextValue = predictor.get(i+1).getValue();
-            Function<Number, Number> approx = Approximation.getApproximateFunction(
-                    new LinkedList<>(predictor.subList(0, i)));
-            nextValue = predictor.get(i-1).getValue() + integrator.integrate(
-                    (x)->{return  f_x_y.apply(x,approx.apply(x));},predictor.get(i-1).getKey(), predictor.get(i).getKey(),
-                    precision);
-  //          do{
+                Function<Number, Number> approx = Approximation.getApproximateFunction(
+                        new LinkedList<>(predictor.subList(0, i)));
+
+                nextValue = predictor.get(i - 1).getValue() + integrator.integrate(
+                        (x) -> {
+                            return f_x_y.apply(x, approx.apply(x));
+                        }, predictor.get(i - 1).getKey(), predictor.get(i).getKey(),
+                        precision);
+                //          do{
+                if (predictor.get(i).getValue() - nextValue <= precision || h > 1025)
+                    repeat_flag = false;
+
                 predictor.set(i, new Pair<>(predictor.get(i).getKey(), nextValue));
 
 //            }while ((nextValue - predictor.get(i+1).getValue()) > precision);
 
+            }
+            ans = Approximation.getApproximateFunction((LinkedList) predictor);
         }
-        ans = Approximation.getApproximateFunction((LinkedList)predictor);
         return ans;
     }
     // Метод Рунге-Кутта
